@@ -189,6 +189,17 @@
     </div>
 </div>
 
+
+<!-- 七步人生创建界面 -->
+<div id="lifeWizard" style="display:none;max-width:900px;margin:auto;padding:30px;color:#fff;">
+<h2 id="wizardTitle">世界背景</h2>
+<div id="wizardContent"></div>
+<div style="display:flex;justify-content:space-between;margin-top:20px;">
+<button class="btn-action" onclick="wizardPrev()">返回</button>
+<button class="btn-action" onclick="wizardNext()">下一步</button>
+</div>
+</div>
+
 <div id="gameScreen">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
         <button class="btn-action" style="background:#555; padding:5px 15px;" onclick="returnToMain()">返回主页</button>
@@ -628,6 +639,47 @@
             }
         } catch (e) { select.innerHTML = '<option>获取失败</option>'; }
     }
+
+let wizardStep=0;
+let playerProfile={name:"",gender:"男",age:16,difficulty:"普通（50）",origin:"终南山猎户之子",traits:"勤奋、聪慧"};
+
+function startNewGame(){
+document.getElementById('startScreen').style.display='none';
+document.getElementById('lifeWizard').style.display='block';
+renderWizard();
+}
+
+function renderWizard(){
+const c=document.getElementById("wizardContent");
+const t=document.getElementById("wizardTitle");
+if(wizardStep===0){t.innerText="世界背景";c.innerHTML="南宋末年，蒙古南下，江湖风云再起……";}
+if(wizardStep===1){t.innerText="角色创建";c.innerHTML=`姓名<input id=nameInput><br>性别<select id=genderInput><option>男</option><option>女</option></select><br>年龄<input id=ageInput value=16>`;}
+if(wizardStep===2){t.innerText="难度";c.innerHTML=`<select id=diffInput><option>天命之子（9999）</option><option>简单（100）</option><option selected>普通（50）</option><option>困难（20）</option><option>极限（0）</option></select>`;}
+if(wizardStep===3){t.innerText="出身";c.innerHTML=`<textarea id=originInput>终南山猎户之子</textarea>`;}
+if(wizardStep===4){t.innerText="青年经历";c.innerHTML=`<textarea id=traitInput>勤奋、聪慧、福缘深厚</textarea>`;}
+if(wizardStep===5){saveProfile();t.innerText="确认";c.innerHTML=`<pre>${JSON.stringify(playerProfile,null,2)}</pre>`;}
+}
+function saveProfile(){
+if(document.getElementById("nameInput"))playerProfile.name=nameInput.value;
+if(document.getElementById("genderInput"))playerProfile.gender=genderInput.value;
+if(document.getElementById("ageInput"))playerProfile.age=ageInput.value;
+if(document.getElementById("diffInput"))playerProfile.difficulty=diffInput.value;
+if(document.getElementById("originInput"))playerProfile.origin=originInput.value;
+if(document.getElementById("traitInput"))playerProfile.traits=traitInput.value;
+}
+function wizardNext(){
+if(wizardStep<5){saveProfile();wizardStep++;renderWizard();}
+else{
+document.getElementById('lifeWizard').style.display='none';
+chatHistory=[`<p class='ai-msg'><strong>【1237年·七月初二】</strong><br>${playerProfile.name||"无名少年"}的人生开始了。</p>`];
+enterGameInterface();
+}
+}
+function wizardPrev(){
+if(wizardStep===0){document.getElementById('lifeWizard').style.display='none';document.getElementById('startScreen').style.display='block';}
+else{wizardStep--;renderWizard();}
+}
+
 </script>
 </body>
 </html>
