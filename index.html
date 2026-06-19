@@ -28,9 +28,31 @@
             background-size: cover;
             z-index: 10;
         }
-        .music-bar { position: absolute; top: 20px; right: 20px; z-index: 20; }
-        .btn-music-toggle { background-color: rgba(13, 19, 24, 0.6); border: 1px solid #8ba4b5; color: #c2d5e3; padding: 8px 18px; font-size: 14px; border-radius: 4px; cursor: pointer; font-family: "楷体", "STKaiti", serif; }
         
+        /* 新增：主页面标题样式 */
+        .game-main-title {
+            position: absolute;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 5rem;
+            font-family: "楷体", "STKaiti", serif;
+            color: #e0e6ed;
+            letter-spacing: 1.5rem;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(92, 132, 160, 0.8);
+            z-index: 15;
+            pointer-events: none; /* 避免挡住大雕和交互 */
+            text-align: center;
+            margin-left: 0.75rem; /* 补偿最后一个字letter-spacing带来的不对称 */
+        }
+
+        .music-bar { position: absolute; top: 20px; right: 20px; z-index: 20; }
+        .btn-music-toggle { background-color: rgba(13, 19, 24, 0.6); border: 1px solid #8ba4b5; color: #c2d5e3; padding: 8px 18px; font-size: 14px; border-radius: 4px; cursor: pointer; font-family: "楷体", "STKaiti", serif; transition: all 0.3s ease; }
+        .btn-music-toggle:hover { background-color: rgba(30, 45, 58, 0.9); box-shadow: 0 0 10px rgba(139, 164, 181, 0.5); color: #fff; }
+
+        /* 新增：左下角更新日志容器 */
+        .update-log-container { position: absolute; bottom: 20px; left: 20px; z-index: 20; }
+
         .main-menu-buttons {
             position: absolute;
             bottom: 15%; 
@@ -39,6 +61,7 @@
             flex-direction: column;
             gap: 15px;
             align-items: flex-end;
+            z-index: 20;
         }
         .btn-img-style {
             background: rgba(13, 22, 30, 0.75);
@@ -71,9 +94,11 @@
             background: rgba(10, 15, 20, 0.8);
         }
 
-        /* ===== 系统设置高级大弹窗 ===== */
-        #settingsModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
+        /* ===== 弹窗公共样式 ===== */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
         .modal-content { background: #162029; border: 2px solid #3a4f5e; padding: 25px; border-radius: 8px; width: 650px; max-height: 85vh; overflow-y: auto; text-align: center; box-sizing: border-box; box-shadow: 0 0 30px rgba(0,0,0,0.7); }
+        
+        /* ===== 系统设置专用样式 ===== */
         .settings-tabs { display: flex; gap: 5px; border-bottom: 1px solid #283945; margin-bottom: 15px; padding-bottom: 5px; }
         .tab-btn { flex: 1; padding: 10px 0; background: #0a1014; color: #7fa1b8; border: 1px solid #283945; cursor: pointer; font-size: 13px; border-radius: 4px 4px 0 0; }
         .tab-btn.active { background: #3a566b; color: #fff; border-color: #5c84a0; font-weight: bold; }
@@ -138,17 +163,47 @@
 <audio id="bgMusic" loop src="bgm.mp3"></audio>
 
 <div id="startScreen">
-    <div class="music-bar"><button id="musicBtn" class="btn-music-toggle" onclick="toggleMusic()">🔇 开启乐声</button></div>
+    <!-- 主界面上方标题 -->
+    <div class="game-main-title">神雕侠侣</div>
+
+    <div class="music-bar">
+        <button id="musicBtn" class="btn-music-toggle" onclick="toggleMusic()">🔇 开启乐声</button>
+    </div>
+
+    <!-- 左下角更新日志按钮 -->
+    <div class="update-log-container">
+        <button class="btn-music-toggle" onclick="toggleUpdateLog(true)">📜 更新日志</button>
+    </div>
     
     <div class="main-menu-buttons">
         <button class="btn-img-style" onclick="startNewGame()">开始游戏</button>
         <button class="btn-img-style" id="btnContinue" disabled onclick="continueGame()">继续游戏</button>
-        <button class="btn-img-style" onclick="toggleSettings(true); switchTab('tab-lorebook', document.querySelectorAll('.tab-btn')[3]);">创意工坊（暂时为空）</button>
+        <!-- 修改了创意工坊按钮功能 -->
+        <button class="btn-img-style" onclick="alert('暂时为空，敬请期待。')">创意工坊</button>
         <button class="btn-img-style" onclick="toggleSettings(true)">其他设置</button>
     </div>
 </div>
 
-<div id="settingsModal">
+<!-- 新增：更新日志弹窗 -->
+<div id="updateLogModal" class="modal-overlay">
+    <div class="modal-content" style="width: 500px;">
+        <h3 style="margin-bottom:15px; letter-spacing: 2px;">【 更新日志 】</h3>
+        <div style="text-align: left; color: #a9c6dc; line-height: 1.8; font-size: 14px; background: #0a1014; padding: 15px; border-radius: 5px; border: 1px solid #283945;">
+            <p style="margin-top: 0; font-weight: bold; color: #fff;">v1.0.1 江湖初现</p>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li>新增主界面“神雕侠侣”标题悬浮显示，优化UI布局。</li>
+                <li>新增独立的更新日志查询功能。</li>
+                <li>优化“创意工坊”按钮逻辑，敬请期待后续剧本编辑器。</li>
+                <li>修复并平滑了底层API连接。</li>
+            </ul>
+        </div>
+        <div style="display:flex; justify-content:center; margin-top: 25px;">
+            <button class="btn-action" style="background:#44525d; width: 120px;" onclick="toggleUpdateLog(false)">关闭</button>
+        </div>
+    </div>
+</div>
+
+<div id="settingsModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="margin-bottom:15px; letter-spacing: 2px;">【 系统天机阁 · 高级设置 】</h3>
         
@@ -173,7 +228,7 @@
         <div id="tab-api" class="tab-panel">
             <div class="setting-item">
                 <label for="apiUrlInput">🌐 接口地址 (Base URL)：</label>
-                <input type="text" id="apiUrlInput" placeholder="例如: [https://api.deepseek.com/v1](https://api.deepseek.com/v1)">
+                <input type="text" id="apiUrlInput" placeholder="例如: https://api.deepseek.com/v1">
             </div>
             <div class="setting-item">
                 <label for="apiKeyInput">🔑 API Key：</label>
@@ -478,6 +533,9 @@
     }
 
     function toggleSettings(show) { document.getElementById('settingsModal').style.display = show ? 'flex' : 'none'; }
+    
+    // 新增：开关更新日志弹窗
+    function toggleUpdateLog(show) { document.getElementById('updateLogModal').style.display = show ? 'flex' : 'none'; }
 
     function saveSettings() {
         localStorage.setItem('sd_api_url', document.getElementById('apiUrlInput').value.trim());
@@ -495,7 +553,7 @@
 
     /* ===== 大模型剧情请求与沙盒控制内核 ===== */
     async function sendMessage() {
-        let apiUrl = localStorage.getItem('sd_api_url') || '[https://api.deepseek.com/v1](https://api.deepseek.com/v1)';
+        let apiUrl = localStorage.getItem('sd_api_url') || 'https://api.deepseek.com/v1';
         const apiKey = localStorage.getItem('sd_api_key');
         const apiModel = localStorage.getItem('sd_api_model') || 'deepseek-chat';
         const userInputText = document.getElementById('userInput').value.trim();
