@@ -517,7 +517,56 @@
         document.getElementById('startScreen').style.display = 'block'; 
     }
     
-    async function fetchAvailableModels() { /*...*/ }
+    async function fetchAvailableModels() {
+    const apiUrl = document.getElementById('apiUrlInput').value.trim();
+    const apiKey = document.getElementById('apiKeyInput').value.trim();
+    const modelSelect = document.getElementById('modelSelect');
+
+    if (!apiUrl || !apiKey) {
+        alert("请先在【接口天眼】中填入完整的 API 地址和 Key！");
+        return;
+    }
+
+    modelSelect.innerHTML = "<option>正在向江湖寻觅模型...</option>";
+
+    try {
+        // 自动处理结尾斜杠，防止路径错误
+        const baseUrl = apiUrl.replace(/\/$/, '');
+        
+        const response = await fetch(`${baseUrl}/models`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`网络响应异常: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const models = result.data; // 大多数兼容 OpenAI 的接口返回格式为 { data: [...] }
+
+        if (models && Array.isArray(models) && models.length > 0) {
+            modelSelect.innerHTML = ""; // 清空加载提示
+            models.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model.id;
+                option.text = model.id;
+                modelSelect.appendChild(option);
+            });
+            alert(`成功！已为你寻得 ${models.length} 个可用模型。`);
+        } else {
+            modelSelect.innerHTML = "<option>未找到可用模型</option>";
+            alert("获取成功，但未解析到模型列表，请检查 API 服务配置。");
+        }
+    } catch (error) {
+        console.error("模型获取错误:", error);
+        modelSelect.innerHTML = "<option>获取失败</option>";
+        alert("无法连接到接口，请检查：\n1. API 地址是否正确（应包含 /v1）\n2. API Key 是否有效\n3. 是否存在跨域(CORS)拦截");
+    }
+}
 
     // ===== 全新居中排版的创角步骤机制 =====
     function renderWizard(){
