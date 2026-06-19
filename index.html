@@ -2,95 +2,130 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>神雕侠侣 · 智能挂机高端定制版</title>
+    <title>神雕侠侣</title>
     <style>
-        body { background-color: #1a1a1a; color: #e0e0e0; font-family: "Microsoft YaHei", sans-serif; padding: 20px; margin: 0; }
+        body { background-color: #0d1316; color: #e0e6ed; font-family: "Microsoft YaHei", sans-serif; padding: 0; margin: 0; overflow-x: hidden; }
         
         /* ===== 开局遮罩 ===== */
         #introOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, #2c1a1a 0%, #0a0a0a 100%);
+            background: radial-gradient(circle, #1a2630 0%, #080d12 100%);
             z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        .intro-text { font-size: 20px; color: #cc9933; margin-bottom: 30px; font-style: italic; letter-spacing: 2px; }
+        .intro-text { font-size: 20px; color: #a9c6dc; margin-bottom: 30px; font-style: italic; letter-spacing: 2px; }
         .btn-enter-江湖 {
-            background: linear-gradient(135deg, #a00000, #5c0000); color: #fff;
-            border: 2px solid #cc9933; padding: 15px 40px; cursor: pointer;
-            font-size: 20px; font-weight: bold; border-radius: 5px; box-shadow: 0 0 15px rgba(204,153,51,0.4);
+            background: linear-gradient(135deg, #2a3d4c, #16232d); color: #fff;
+            border: 2px solid #7fa2b8; padding: 15px 40px; cursor: pointer;
+            font-size: 20px; font-weight: bold; border-radius: 5px; box-shadow: 0 0 15px rgba(127,162,184,0.4);
             transition: all 0.3s;
         }
-        .btn-enter-江湖:hover { transform: scale(1.08); box-shadow: 0 0 25px rgba(204,153,51,0.8); }
+        .btn-enter-江湖:hover { transform: scale(1.08); box-shadow: 0 0 25px rgba(127,162,184,0.8); }
 
-        /* ===== 欢迎大厅 ===== */
-        #startScreen { max-width: 800px; margin: 60px auto; text-align: center; padding: 40px 20px; position: relative; }
-        .game-title { font-size: 54px; color: #d4a359; margin-bottom: 5px; font-weight: bold; letter-spacing: 6px; font-family: "楷体", "STKaiti", sans-serif; text-shadow: 0 0 10px rgba(212, 163, 89, 0.5); }
-        .game-version { display: inline-block; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #4a3c28; color: #a69275; font-size: 13px; padding: 3px 12px; border-radius: 3px; margin-bottom: 15px; }
-        .game-intro { font-size: 14px; color: #8c8273; margin-bottom: 40px; letter-spacing: 1px; }
-        .music-bar { position: absolute; top: 10px; right: 10px; z-index: 10; }
-        .btn-music-toggle { background-color: rgba(0, 0, 0, 0.6); border: 1px solid #4a3c28; color: #a69275; padding: 6px 15px; font-size: 13px; border-radius: 4px; cursor: pointer; }
-        .menu-group { display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        .btn-menu { width: 320px; background: rgba(38, 38, 38, 0.4); color: #a69275; border: 1px solid #4a3c28; padding: 12px 0; cursor: pointer; font-size: 16px; border-radius: 4px; transition: all 0.2s; }
-        .btn-menu.btn-primary { background: #a37532; color: #fff; border: 1px solid #d4a359; font-weight: bold; }
-        .btn-menu:hover:not(:disabled) { background: rgba(212, 163, 89, 0.2); border-color: #d4a359; color: #fff; }
-        .btn-menu:disabled { background: rgba(30, 30, 30, 0.3); border-color: #333; color: #555; cursor: not-allowed; }
+        /* ===== 欢迎大厅 (重置版 UI) ===== */
+        #startScreen { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('插图.png') no-repeat center center;
+            background-size: cover;
+            z-index: 10;
+        }
+        .music-bar { position: absolute; top: 20px; right: 20px; z-index: 20; }
+        .btn-music-toggle { background-color: rgba(13, 19, 24, 0.6); border: 1px solid #8ba4b5; color: #c2d5e3; padding: 8px 18px; font-size: 14px; border-radius: 4px; cursor: pointer; font-family: "楷体", "STKaiti", serif; }
+        
+        .main-menu-buttons {
+            position: absolute;
+            bottom: 15%; 
+            right: 8%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        .btn-img-style {
+            background: rgba(13, 22, 30, 0.75);
+            border: 2px solid #8ba4b5;
+            color: #c2d5e3;
+            padding: 12px 20px;
+            font-size: 20px;
+            font-family: "楷体", "STKaiti", serif;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: inset 0 0 10px rgba(139, 164, 181, 0.2), 0 0 15px rgba(0,0,0,0.8);
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 3px black;
+            width: 300px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .btn-img-style:hover:not(:disabled) {
+            background: rgba(30, 45, 58, 0.9);
+            box-shadow: inset 0 0 15px rgba(139, 164, 181, 0.5), 0 0 20px rgba(139, 164, 181, 0.7);
+            transform: scale(1.05);
+            color: #fff;
+        }
+        .btn-img-style:disabled {
+            border-color: #44525d;
+            color: #667580;
+            cursor: not-allowed;
+            box-shadow: none;
+            background: rgba(10, 15, 20, 0.8);
+        }
 
         /* ===== 系统设置高级大弹窗 ===== */
         #settingsModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: #222; border: 2px solid #5c4033; padding: 25px; border-radius: 8px; width: 650px; max-height: 85vh; overflow-y: auto; text-align: center; box-sizing: border-box; box-shadow: 0 0 30px rgba(0,0,0,0.7); }
-        .settings-tabs { display: flex; gap: 5px; border-bottom: 1px solid #4a3c28; margin-bottom: 15px; padding-bottom: 5px; }
-        .tab-btn { flex: 1; padding: 10px 0; background: #141414; color: #a69275; border: 1px solid #4a3c28; cursor: pointer; font-size: 13px; border-radius: 4px 4px 0 0; }
-        .tab-btn.active { background: #a37532; color: #fff; border-color: #d4a359; font-weight: bold; }
+        .modal-content { background: #162029; border: 2px solid #3a4f5e; padding: 25px; border-radius: 8px; width: 650px; max-height: 85vh; overflow-y: auto; text-align: center; box-sizing: border-box; box-shadow: 0 0 30px rgba(0,0,0,0.7); }
+        .settings-tabs { display: flex; gap: 5px; border-bottom: 1px solid #283945; margin-bottom: 15px; padding-bottom: 5px; }
+        .tab-btn { flex: 1; padding: 10px 0; background: #0a1014; color: #7fa1b8; border: 1px solid #283945; cursor: pointer; font-size: 13px; border-radius: 4px 4px 0 0; }
+        .tab-btn.active { background: #3a566b; color: #fff; border-color: #5c84a0; font-weight: bold; }
         .tab-panel { display: none; text-align: left; }
         .tab-panel.active { display: block; }
         .setting-item { margin-bottom: 15px; text-align: left; }
-        .setting-item label { font-size: 14px; color: #cc9933; font-weight: bold; display: block; margin-bottom: 8px; }
-        .volume-container { display: flex; align-items: center; gap: 10px; background: #111; padding: 8px; border-radius: 4px; border: 1px solid #444; }
-        .volume-slider { flex: 1; accent-color: #cc9933; cursor: pointer; }
-        select { padding: 10px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        .setting-item label { font-size: 14px; color: #a9c6dc; font-weight: bold; display: block; margin-bottom: 8px; }
+        .volume-container { display: flex; align-items: center; gap: 10px; background: #0d1318; padding: 8px; border-radius: 4px; border: 1px solid #283945; }
+        .volume-slider { flex: 1; accent-color: #5c84a0; cursor: pointer; }
+        select { padding: 10px; background: #1a2630; color: #fff; border: 1px solid #3a4f5e; border-radius: 4px; width: 100%; box-sizing: border-box; }
         
         /* 酒馆管理系统样式 */
         .item-manager-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-small { background: #4a3c28; border: 1px solid #cc9933; color: #e0e0e0; padding: 4px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; margin-left: 2px; }
-        .btn-small:hover { background: #a37532; color: #fff; }
-        .btn-import-label { background: #1c3c28; border: 1px solid #4caf50; color: #e0e0e0; padding: 4px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; display: inline-block; }
-        .btn-import-label:hover { background: #4caf50; color: #fff; }
+        .btn-small { background: #283945; border: 1px solid #5c84a0; color: #e0e6ed; padding: 4px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; margin-left: 2px; }
+        .btn-small:hover { background: #3a566b; color: #fff; }
+        .btn-import-label { background: #1c323c; border: 1px solid #3ca085; color: #e0e6ed; padding: 4px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; display: inline-block; }
+        .btn-import-label:hover { background: #3ca085; color: #fff; }
         
-        .item-list-container { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; background: #141414; padding: 8px; border: 1px solid #333; border-radius: 4px; }
-        .prompt-item-card { background: #2a2a2a; border: 1px solid #444; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-        .prompt-item-card.disabled-card { opacity: 0.5; background: #1f1f1f; }
+        .item-list-container { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; background: #0a1014; padding: 8px; border: 1px solid #283945; border-radius: 4px; }
+        .prompt-item-card { background: #1a2630; border: 1px solid #283945; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .prompt-item-card.disabled-card { opacity: 0.5; background: #0f171d; }
         .card-top-row { display: flex; justify-content: space-between; align-items: center; }
-        .card-meta { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: bold; color: #cc9933; }
-        .card-tag { font-size: 11px; background: #5c4033; color: #d4a359; padding: 1px 5px; border-radius: 3px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-meta { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: bold; color: #a9c6dc; }
+        .card-tag { font-size: 11px; background: #283945; color: #9bc3df; padding: 1px 5px; border-radius: 3px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .card-controls { display: flex; align-items: center; gap: 12px; }
         
-        /* 排序箭头 */
-        .order-arrows { display: flex; flex-direction: column; gap: 2px; }
-        .arrow-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 11px; padding: 0 2px; line-height: 1; }
-        .arrow-btn:hover { color: #cc9933; }
+        .arrow-btn { background: none; border: none; color: #7fa1b8; cursor: pointer; font-size: 11px; padding: 0 2px; line-height: 1; }
+        .arrow-btn:hover { color: #a9c6dc; }
         
-        /* Switch 开关 */
         .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .3s; border-radius: 18px; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #283945; transition: .3s; border-radius: 18px; }
         .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: #a37532; }
+        input:checked + .slider { background-color: #3a566b; }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        .card-edit-area { width: 100%; background: #1a1a1a; color: #ddd; border: 1px solid #444; border-radius: 3px; padding: 6px; box-sizing: border-box; font-size: 12px; resize: vertical; font-family: monospace; }
-        .card-edit-area:focus { border-color: #cc9933; outline: none; }
+        .card-edit-area { width: 100%; background: #0d1318; color: #ddd; border: 1px solid #283945; border-radius: 3px; padding: 6px; box-sizing: border-box; font-size: 12px; resize: vertical; font-family: monospace; }
+        .card-edit-area:focus { border-color: #5c84a0; outline: none; }
 
         /* ===== 游戏核心界面 ===== */
-        #gameScreen { display: none; max-width: 800px; margin: 0 auto; }
+        #gameScreen { display: none; max-width: 800px; margin: 40px auto; padding: 20px; }
         .game-container { display: grid; grid-template-columns: 250px 1fr; gap: 20px; }
-        .panel { border: 2px solid #5c4033; padding: 15px; background-color: #262626; border-radius: 8px; }
-        h3 { color: #cc9933; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 0; }
-        .chat-box { height: 350px; overflow-y: auto; background: #111; padding: 15px; border: 1px solid #444; margin-bottom: 15px; }
-        .user-msg { color: #4caf50; margin: 5px 0; }
-        .ai-msg { color: #cc9933; margin: 5px 0; }
-        .sys-msg { color: #ff9800; font-style: italic; font-size: 13px; }
+        .panel { border: 2px solid #3a4f5e; padding: 15px; background-color: #162029; border-radius: 8px; }
+        h3 { color: #a9c6dc; border-bottom: 1px solid #283945; padding-bottom: 5px; margin-top: 0; }
+        .chat-box { height: 350px; overflow-y: auto; background: #0d1318; padding: 15px; border: 1px solid #283945; margin-bottom: 15px; }
+        .user-msg { color: #52afaf; margin: 5px 0; }
+        .ai-msg { color: #a9c6dc; margin: 5px 0; }
+        .sys-msg { color: #4fa1c0; font-style: italic; font-size: 13px; }
         .input-area { display: flex; gap: 10px; }
-        button.btn-action { background: #8b0000; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 4px; }
-        .highlight { color: #ffeb3b; }
+        button.btn-action { background: #2c4253; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        button.btn-action:hover { background: #3a566b; }
+        .highlight { color: #7ae5ff; }
     </style>
 </head>
 <body>
@@ -104,14 +139,12 @@
 
 <div id="startScreen">
     <div class="music-bar"><button id="musicBtn" class="btn-music-toggle" onclick="toggleMusic()">🔇 开启乐声</button></div>
-    <div class="game-title">神雕侠侣</div>
-    <div class="game-version">完美修复防死锁版 V0.1.8</div>
-    <div class="game-intro">沉浸式的模块化提示词武侠世界（免API亦可完美开局体验）</div>
-    <div class="menu-group">
-        <button class="btn-menu btn-primary" onclick="startNewGame()">开始新人生</button>
-        <button class="btn-menu" id="btnContinue" disabled onclick="continueGame()">读取人生 (无)</button>
-        <button class="btn-menu" onclick="alert('更新日志：V0.1.8 解除了必须填API才能开局的死锁逻辑，修复了遮罩层，没有填Key时会自动转为本地离线文本沙盒模拟模式！')">更新日志</button>
-        <button class="btn-menu" onclick="toggleSettings(true)">系统设置</button>
+    
+    <div class="main-menu-buttons">
+        <button class="btn-img-style" onclick="startNewGame()">开始游戏</button>
+        <button class="btn-img-style" id="btnContinue" disabled onclick="continueGame()">继续游戏</button>
+        <button class="btn-img-style" onclick="toggleSettings(true); switchTab('tab-lorebook', document.querySelectorAll('.tab-btn')[3]);">创意工坊（暂时为空）</button>
+        <button class="btn-img-style" onclick="toggleSettings(true)">其他设置</button>
     </div>
 </div>
 
@@ -140,7 +173,7 @@
         <div id="tab-api" class="tab-panel">
             <div class="setting-item">
                 <label for="apiUrlInput">🌐 接口地址 (Base URL)：</label>
-                <input type="text" id="apiUrlInput" placeholder="例如: https://api.deepseek.com/v1">
+                <input type="text" id="apiUrlInput" placeholder="例如: [https://api.deepseek.com/v1](https://api.deepseek.com/v1)">
             </div>
             <div class="setting-item">
                 <label for="apiKeyInput">🔑 API Key：</label>
@@ -182,35 +215,32 @@
         </div>
 
         <div style="display:flex; gap:10px; justify-content:center; flex-wrap: wrap; margin-top: 25px;">
-            <button class="btn-action" style="background:#4caf50;" onclick="saveSettings()">保存天机配置</button>
-            <button class="btn-action" style="background:#555;" onclick="toggleSettings(false)">关闭</button>
-            <button class="btn-action" style="background:#cc9933; color:#1a1a1a; width: 100%; margin-top: 10px;" onclick="toggleSettings(false); returnToMain();">返回主页面</button>
+            <button class="btn-action" style="background:#3ca085;" onclick="saveSettings()">保存天机配置</button>
+            <button class="btn-action" style="background:#44525d;" onclick="toggleSettings(false)">关闭</button>
         </div>
     </div>
 </div>
 
-
-<!-- 七步人生创建界面 -->
-<div id="lifeWizard" style="display:none;max-width:900px;margin:auto;padding:30px;color:#fff;">
-<h2 id="wizardTitle">世界背景</h2>
-<div id="wizardContent"></div>
-<div style="display:flex;justify-content:space-between;margin-top:20px;">
-<button class="btn-action" onclick="wizardPrev()">返回</button>
-<button class="btn-action" onclick="wizardNext()">下一步</button>
-</div>
+<div id="lifeWizard" style="display:none;max-width:900px;margin:100px auto;padding:30px;color:#fff;background:rgba(13,22,30,0.9);border-radius:8px;border:1px solid #3a4f5e;">
+    <h2 id="wizardTitle">世界背景</h2>
+    <div id="wizardContent"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:20px;">
+        <button class="btn-action" onclick="wizardPrev()">返回</button>
+        <button class="btn-action" onclick="wizardNext()">下一步</button>
+    </div>
 </div>
 
 <div id="gameScreen">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <button class="btn-action" style="background:#555; padding:5px 15px;" onclick="returnToMain()">返回主页</button>
-        <h2 style="color: #cc9933; margin: 0;">神雕侠侣 · 智能江湖</h2>
-        <div style="color:#888; font-size:12px;">自动保存已开启 ✨</div>
+        <button class="btn-action" style="background:#44525d; padding:5px 15px;" onclick="returnToMain()">返回主页</button>
+        <h2 style="color: #a9c6dc; margin: 0; text-shadow: 1px 1px 2px #000;">神雕侠侣</h2>
+        <div style="color:#7fa1b8; font-size:12px;">自动保存已开启 ✨</div>
     </div>
     
     <div class="game-container">
         <div class="panel">
             <h3>【 角色状态 】</h3>
-            <p>气血: <span id="hp" class="highlight">100</span> / 100</p>
+            <p>气血: <span id="hp" class="highlight">100</span></p>
             <p>内力: <span id="mp" class="highlight">50</span> / 50</p>
             <p>修为: <span id="exp" class="highlight">0</span></p>
             <h3>【 背包物品 】</h3>
@@ -220,7 +250,7 @@
             <h3>【 当前场景：终南山下 】</h3>
             <div id="chatBox" class="chat-box"></div>
             <div class="input-area">
-                <input type="text" id="userInput" style="padding:10px; background:#333; color:#fff; border:1px solid #555; border-radius:4px; flex:1;" placeholder="输入你的应对之策..." onkeydown="if(event.key==='Enter')sendMessage()">
+                <input type="text" id="userInput" style="padding:10px; background:#1a2630; color:#fff; border:1px solid #3a4f5e; border-radius:4px; flex:1;" placeholder="输入你的应对之策..." onkeydown="if(event.key==='Enter')sendMessage()">
                 <button class="btn-action" onclick="sendMessage()">交互</button>
             </div>
         </div>
@@ -235,6 +265,9 @@
 
     let presetList = [];
     let lorebookList = [];
+
+    let wizardStep = 0;
+    let playerProfile = { name: "", gender: "男", age: 16, difficulty: "普通（50）", origin: "终南山猎户之子", traits: "勤奋、聪慧" };
 
     const defaultPresets = [
         { id: "p1", name: "原著内核绑定", tag: "system", content: "你现在是金庸武侠巨著《神雕侠侣》的文字挂机游戏剧情引擎。必须严格契合原著南宋末年、蒙古入侵、李莫愁因情生恨血洗江湖等背景设定。", enabled: true },
@@ -265,7 +298,6 @@
 
         if(localStorage.getItem('sd_player_save')) {
             document.getElementById('btnContinue').disabled = false;
-            document.getElementById('btnContinue').innerText = "读取人生";
         }
         document.getElementById('bgMusic').volume = 0.5;
     }
@@ -340,7 +372,7 @@
         reader.readAsText(file);
     }
 
-    /* ===== 酒馆式 UI 渲染 ===== */
+    /* ===== UI 渲染 ===== */
     function renderPromptList(type) {
         const container = document.getElementById(type === 'preset' ? 'presetItemsContainer' : 'lorebookItemsContainer');
         const list = type === 'preset' ? presetList : lorebookList;
@@ -371,8 +403,8 @@
                 </div>
                 ${type === 'lorebook' ? `
                     <div style="margin-bottom:4px; display:flex; align-items:center; gap:5px;">
-                        <span style="font-size:11px; color:#a69275;">触发核心词:</span>
-                        <input type="text" value="${item.trigger || ''}" style="background:#111; border:1px solid #444; color:#fff; font-size:11px; padding:2px 5px; border-radius:3px; width:80px;" onchange="updateItemTrigger('${index}', this.value)">
+                        <span style="font-size:11px; color:#7fa1b8;">触发核心词:</span>
+                        <input type="text" value="${item.trigger || ''}" style="background:#0d1318; border:1px solid #283945; color:#fff; font-size:11px; padding:2px 5px; border-radius:3px; width:80px;" onchange="updateItemTrigger(${index}, this.value)">
                     </div>
                 ` : ''}
                 <textarea class="card-edit-area" rows="2" onchange="updateItemContent('${type}', ${index}, this.value)">${item.content}</textarea>
@@ -442,7 +474,7 @@
         document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
-        element.classList.add('active');
+        if(element) element.classList.add('active');
     }
 
     function toggleSettings(show) { document.getElementById('settingsModal').style.display = show ? 'flex' : 'none'; }
@@ -461,9 +493,9 @@
         toggleSettings(false);
     }
 
-    /* ===== 大模型剧情请求与离线降级沙盒控制内核 ===== */
+    /* ===== 大模型剧情请求与沙盒控制内核 ===== */
     async function sendMessage() {
-        let apiUrl = localStorage.getItem('sd_api_url') || 'https://api.deepseek.com/v1';
+        let apiUrl = localStorage.getItem('sd_api_url') || '[https://api.deepseek.com/v1](https://api.deepseek.com/v1)';
         const apiKey = localStorage.getItem('sd_api_key');
         const apiModel = localStorage.getItem('sd_api_model') || 'deepseek-chat';
         const userInputText = document.getElementById('userInput').value.trim();
@@ -480,13 +512,12 @@
         chatBox.innerHTML += `<p class="ai-msg" id="${loadingId}"><strong>系统：</strong>正飞鸽传书推演风云...</p>`;
         systemMemory.push({ "role": "user", "content": userInputText });
 
-        // ===== 核心降级逻辑：如果没有配置 Key，自动转入前端模拟运行模式 =====
+        // ===== 本地沙盒降级逻辑 =====
         if (!apiKey) {
             setTimeout(() => {
                 let worldResponse = `你正欲行“${userInputText}”。忽然微风拂过，长剑轻鸣。`;
                 let hp_c = 0, exp_c = 10, item_c = "";
                 
-                // 根据输入模拟世界书触发提示
                 lorebookList.forEach(item => {
                     if (item.enabled && item.trigger && userInputText.includes(item.trigger)) {
                         worldResponse += ` (惊动了神秘线索：你脑海中闪过关于【${item.trigger}】的传闻，似乎与该处的秘籍或规矩息息相关...)`;
@@ -507,7 +538,6 @@
                 chatHistory.push(`<p class="ai-msg"><strong>【本地沙盒模拟器】江湖风云：</strong>${worldResponse}</p>`);
                 systemMemory.push({ "role": "assistant", "content": worldResponse });
 
-                // 结算
                 if (hp_c) { player.hp += hp_c; document.getElementById('hp').innerText = player.hp; logAndSaveSys(`[本地] 气血变化: ${hp_c}`); }
                 if (exp_c) { player.exp += exp_c; document.getElementById('exp').innerText = player.exp; logAndSaveSys(`[本地] 修为变化: +${exp_c}`); }
                 if (item_c) { player.inventory.push(item_c); updateInventoryUI(); logAndSaveSys(`[本地] 获得物品: 【${item_c}】`); }
@@ -568,8 +598,11 @@
             const data = await response.json();
             let rawContent = data.choices[0].message.content.trim();
 
-            if (rawContent.startsWith("```")) {
-                rawContent = rawContent.replace(/^```[a-zA-Z]*\s*/, "").replace(/\s*```$/, "");
+            // 智能过滤大模型由于幻觉夹带的常规文本前后缀，锁定大括号内容
+            const firstBrace = rawContent.indexOf('{');
+            const lastBrace = rawContent.lastIndexOf('}');
+            if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+                rawContent = rawContent.substring(firstBrace, lastBrace + 1);
             }
 
             let gameResult;
@@ -583,46 +616,102 @@
             document.getElementById(loadingId).outerHTML = `<p class="ai-msg"><strong>江湖风云：</strong>${gameResult.reply}</p>`;
             chatHistory.push(`<p class="ai-msg"><strong>江湖风云：</strong>${gameResult.reply}</p>`);
 
-            if (gameResult.hp_change) { player.hp += gameResult.hp_change; document.getElementById('hp').innerText = player.hp; logAndSaveSys(`[系统] 气血变化: ${gameResult.hp_change}`); }
-            if (gameResult.exp_change) { player.exp += gameResult.exp_change; document.getElementById('exp').innerText = player.exp; logAndSaveSys(`[系统] 修为变化: +${gameResult.exp_change}`); }
-            if (gameResult.get_item) { player.inventory.push(gameResult.get_item); updateInventoryUI(); logAndSaveSys(`[系统] 获得物品: 【${gameResult.get_item}】`); }
+            // 强制转换为 Number 防止 AI 返回数字字符串导致不可预知的类型拼接漏洞
+            if (gameResult.hp_change) { 
+                let hpChange = Number(gameResult.hp_change) || 0;
+                player.hp += hpChange; 
+                document.getElementById('hp').innerText = player.hp; 
+                logAndSaveSys(`[系统] 气血变化: ${hpChange}`); 
+            }
+            if (gameResult.exp_change) { 
+                let expChange = Number(gameResult.exp_change) || 0;
+                player.exp += expChange; 
+                document.getElementById('exp').innerText = player.exp; 
+                logAndSaveSys(`[系统] 修为变化: +${expChange}`); 
+            }
+            if (gameResult.get_item) { 
+                player.inventory.push(gameResult.get_item); 
+                updateInventoryUI(); 
+                logAndSaveSys(`[系统] 获得物品: 【${gameResult.get_item}】`); 
+            }
 
             saveGame(); 
             chatBox.scrollTop = chatBox.scrollHeight;
         } catch (error) {
             console.error(error);
-            document.getElementById(loadingId).outerHTML = `<p class="ai-msg" style="color:red;"><strong>系统错误：</strong>遭遇网络断联，原因: ${error.message}。若无API，请在设置中清空API Key体验离线沙盒。</p>`;
+            document.getElementById(loadingId).outerHTML = `<p class="ai-msg" style="color:#ff5555;"><strong>系统错误：</strong>遭遇网络断联，原因: ${error.message}。若无API，请在设置中清空API Key体验离线沙盒。</p>`;
         }
     }
 
-    /* ===== 其他防死锁辅助机制 ===== */
+    /* ===== 其他机制 ===== */
     function awaken江湖() {
         const audio = document.getElementById('bgMusic');
-        // 允许音频播放失败，而不卡死界面
         audio.play().then(() => { 
             isMusicPlaying = true; 
             document.getElementById('musicBtn').innerText = "🔊 正在播放"; 
         }).catch(e => { console.log("音频播放因系统安全策略受阻，已静音启动"); });
         
         document.getElementById('introOverlay').style.display = 'none';
+        document.getElementById('startScreen').style.display = 'flex';
     }
+    
     function toggleMusic() {
         const audio = document.getElementById('bgMusic');
         if (!isMusicPlaying) { audio.play().then(() => { isMusicPlaying = true; document.getElementById('musicBtn').innerText = "🔊 正在播放"; }); } 
         else { audio.pause(); isMusicPlaying = false; document.getElementById('musicBtn').innerText = "🔇 开启乐声"; }
     }
+    
     function adjustVolume(value) { document.getElementById('bgMusic').volume = value / 100; document.getElementById('volumeVal').innerText = value + "%"; }
+    
     function startNewGame() {
-        chatHistory = [`<p class="ai-msg"><strong>神秘跛足道人：</strong>喂！看你细皮嫩肉的，现在蒙古铁骑逼近，赤练仙子李莫愁满江湖杀人，全真教和活死人墓也不太平，你来凑什么热闹？</p>`];
-        enterGameInterface(); 
-        saveGame();
+        // 彻底清空过往周目的状态残留，防止多轮新游戏背包和剧情交叉污染
+        player = { hp: 100, mp: 50, exp: 0, inventory: ["初学木剑 x1"] };
+        chatHistory = [];
+        systemMemory = [];
+        playerProfile = { name: "", gender: "男", age: 16, difficulty: "普通（50）", origin: "终南山猎户之子", traits: "勤奋、聪慧" };
+        wizardStep = 0;
+        
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('lifeWizard').style.display = 'block';
+        renderWizard();
     }
-    function continueGame() { player = JSON.parse(localStorage.getItem('sd_player_save')); chatHistory = JSON.parse(localStorage.getItem('sd_chat_save'))||[]; systemMemory = JSON.parse(localStorage.getItem('sd_memory_save'))||[]; enterGameInterface(); }
-    function enterGameInterface() { document.getElementById('startScreen').style.display = 'none'; document.getElementById('gameScreen').style.display = 'block'; document.getElementById('hp').innerText = player.hp; document.getElementById('mp').innerText = player.mp; document.getElementById('exp').innerText = player.exp; updateInventoryUI(); const cb = document.getElementById('chatBox'); cb.innerHTML = chatHistory.join(''); cb.scrollTop = cb.scrollHeight; }
-    function saveGame() { localStorage.setItem('sd_player_save', JSON.stringify(player)); localStorage.setItem('sd_chat_save', JSON.stringify(chatHistory)); localStorage.setItem('sd_memory_save', JSON.stringify(systemMemory)); document.getElementById('btnContinue').disabled = false; document.getElementById('btnContinue').innerText = "读取人生"; }
+    
+    function continueGame() { 
+        player = JSON.parse(localStorage.getItem('sd_player_save')); 
+        chatHistory = JSON.parse(localStorage.getItem('sd_chat_save'))||[]; 
+        systemMemory = JSON.parse(localStorage.getItem('sd_memory_save'))||[]; 
+        enterGameInterface(); 
+    }
+    
+    function enterGameInterface() { 
+        document.getElementById('startScreen').style.display = 'none'; 
+        document.getElementById('lifeWizard').style.display = 'none';
+        document.getElementById('gameScreen').style.display = 'block'; 
+        document.getElementById('hp').innerText = player.hp; 
+        document.getElementById('mp').innerText = player.mp; 
+        document.getElementById('exp').innerText = player.exp; 
+        updateInventoryUI(); 
+        const cb = document.getElementById('chatBox'); 
+        cb.innerHTML = chatHistory.join(''); 
+        cb.scrollTop = cb.scrollHeight; 
+    }
+    
+    function saveGame() { 
+        localStorage.setItem('sd_player_save', JSON.stringify(player)); 
+        localStorage.setItem('sd_chat_save', JSON.stringify(chatHistory)); 
+        localStorage.setItem('sd_memory_save', JSON.stringify(systemMemory)); 
+        document.getElementById('btnContinue').disabled = false; 
+    }
+    
     function updateInventoryUI() { document.getElementById('inventory').innerHTML = player.inventory.map(item => `<li>${item}</li>`).join(''); }
+    
     function logAndSaveSys(text) { const h = `<p class="sys-msg">${text}</p>`; document.getElementById('chatBox').innerHTML += h; chatHistory.push(h); }
-    function returnToMain() { document.getElementById('gameScreen').style.display = 'none'; document.getElementById('startScreen').style.display = 'block'; }
+    
+    function returnToMain() { 
+        document.getElementById('gameScreen').style.display = 'none'; 
+        document.getElementById('startScreen').style.display = 'flex'; 
+    }
+    
     async function fetchAvailableModels() {
         let url = document.getElementById('apiUrlInput').value.trim(); const key = document.getElementById('apiKeyInput').value.trim();
         if(!url || !key) { alert('请先填好API Key和地址！'); return; }
@@ -631,6 +720,7 @@
         const select = document.getElementById('modelSelect'); select.innerHTML = '<option>窥探中...</option>';
         try {
             const res = await fetch(fetchUrl, { method: 'GET', headers: { 'Authorization': `Bearer ${key}` } });
+            if(!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if(data && data.data) {
                 select.innerHTML = '';
@@ -640,46 +730,105 @@
         } catch (e) { select.innerHTML = '<option>获取失败</option>'; }
     }
 
-let wizardStep=0;
-let playerProfile={name:"",gender:"男",age:16,difficulty:"普通（50）",origin:"终南山猎户之子",traits:"勤奋、聪慧"};
+    function renderWizard(){
+        const c=document.getElementById("wizardContent");
+        const t=document.getElementById("wizardTitle");
+        
+        // 修改渲染逻辑：回显缓存中的历史数据，避免点击“返回”后表单重置
+        if(wizardStep===0){
+            t.innerText="世界背景";
+            c.innerHTML="南宋末年，蒙古南下，江湖风云再起……";
+        }
+        if(wizardStep===1){
+            t.innerText="角色创建";
+            c.innerHTML=`姓名<input id="nameInput" value="${playerProfile.name}" style="margin-left:10px;padding:5px;background:#1a2630;color:#fff;border:1px solid #3a4f5e;"><br><br>
+            性别<select id="genderInput" style="margin-left:10px;padding:5px;width:100px;background:#1a2630;color:#fff;border:1px solid #3a4f5e;">
+                <option ${playerProfile.gender === '男' ? 'selected' : ''}>男</option>
+                <option ${playerProfile.gender === '女' ? 'selected' : ''}>女</option>
+            </select><br><br>
+            年龄<input id="ageInput" value="${playerProfile.age}" style="margin-left:10px;padding:5px;background:#1a2630;color:#fff;border:1px solid #3a4f5e;">`;
+        }
+        if(wizardStep===2){
+            t.innerText="难度";
+            c.innerHTML=`<select id="diffInput" style="width:200px;background:#1a2630;color:#fff;border:1px solid #3a4f5e;padding:5px;">
+                <option ${playerProfile.difficulty.includes('9999') ? 'selected' : ''}>天命之子（9999）</option>
+                <option ${playerProfile.difficulty.includes('100') ? 'selected' : ''}>简单（100）</option>
+                <option ${playerProfile.difficulty.includes('50') ? 'selected' : ''}>普通（50）</option>
+                <option ${playerProfile.difficulty.includes('20') ? 'selected' : ''}>困难（20）</option>
+                <option ${playerProfile.difficulty.includes('0') ? 'selected' : ''}>极限（0）</option>
+            </select>`;
+        }
+        if(wizardStep===3){
+            t.innerText="出身";
+            c.innerHTML=`<textarea id="originInput" style="width:100%;height:60px;background:#1a2630;color:#fff;border:1px solid #3a4f5e;padding:5px;">${playerProfile.origin}</textarea>`;
+        }
+        if(wizardStep===4){
+            t.innerText="青年经历";
+            c.innerHTML=`<textarea id="traitInput" style="width:100%;height:60px;background:#1a2630;color:#fff;border:1px solid #3a4f5e;padding:5px;">${playerProfile.traits}</textarea>`;
+        }
+        if(wizardStep===5){
+            saveProfile();
+            t.innerText="确认";
+            c.innerHTML=`<pre style="background:#0d1318;padding:15px;border:1px solid #283945;color:#a9c6dc;">${JSON.stringify(playerProfile,null,2)}</pre>`;
+        }
+    }
 
-function startNewGame(){
-document.getElementById('startScreen').style.display='none';
-document.getElementById('lifeWizard').style.display='block';
-renderWizard();
-}
+    function saveProfile(){
+        const nameEl = document.getElementById("nameInput");
+        if(nameEl) playerProfile.name = nameEl.value;
+        
+        const genderEl = document.getElementById("genderInput");
+        if(genderEl) playerProfile.gender = genderEl.value;
+        
+        const ageEl = document.getElementById("ageInput");
+        if(ageEl) playerProfile.age = parseInt(ageEl.value) || 16;
+        
+        const diffEl = document.getElementById("diffInput");
+        if(diffEl) playerProfile.difficulty = diffEl.value;
+        
+        const originEl = document.getElementById("originInput");
+        if(originEl) playerProfile.origin = originEl.value;
+        
+        const traitEl = document.getElementById("traitInput");
+        if(traitEl) playerProfile.traits = traitEl.value;
+    }
 
-function renderWizard(){
-const c=document.getElementById("wizardContent");
-const t=document.getElementById("wizardTitle");
-if(wizardStep===0){t.innerText="世界背景";c.innerHTML="南宋末年，蒙古南下，江湖风云再起……";}
-if(wizardStep===1){t.innerText="角色创建";c.innerHTML=`姓名<input id=nameInput><br>性别<select id=genderInput><option>男</option><option>女</option></select><br>年龄<input id=ageInput value=16>`;}
-if(wizardStep===2){t.innerText="难度";c.innerHTML=`<select id=diffInput><option>天命之子（9999）</option><option>简单（100）</option><option selected>普通（50）</option><option>困难（20）</option><option>极限（0）</option></select>`;}
-if(wizardStep===3){t.innerText="出身";c.innerHTML=`<textarea id=originInput>终南山猎户之子</textarea>`;}
-if(wizardStep===4){t.innerText="青年经历";c.innerHTML=`<textarea id=traitInput>勤奋、聪慧、福缘深厚</textarea>`;}
-if(wizardStep===5){saveProfile();t.innerText="确认";c.innerHTML=`<pre>${JSON.stringify(playerProfile,null,2)}</pre>`;}
-}
-function saveProfile(){
-if(document.getElementById("nameInput"))playerProfile.name=nameInput.value;
-if(document.getElementById("genderInput"))playerProfile.gender=genderInput.value;
-if(document.getElementById("ageInput"))playerProfile.age=ageInput.value;
-if(document.getElementById("diffInput"))playerProfile.difficulty=diffInput.value;
-if(document.getElementById("originInput"))playerProfile.origin=originInput.value;
-if(document.getElementById("traitInput"))playerProfile.traits=traitInput.value;
-}
-function wizardNext(){
-if(wizardStep<5){saveProfile();wizardStep++;renderWizard();}
-else{
-document.getElementById('lifeWizard').style.display='none';
-chatHistory=[`<p class='ai-msg'><strong>【1237年·七月初二】</strong><br>${playerProfile.name||"无名少年"}的人生开始了。</p>`];
-enterGameInterface();
-}
-}
-function wizardPrev(){
-if(wizardStep===0){document.getElementById('lifeWizard').style.display='none';document.getElementById('startScreen').style.display='block';}
-else{wizardStep--;renderWizard();}
-}
+    function wizardNext(){
+        if(wizardStep < 5){
+            saveProfile();
+            wizardStep++;
+            renderWizard();
+        }
+        else{
+            // 在踏入江湖时，将向导创建的加成同步绑定进入游戏核心状态机中
+            if (playerProfile.difficulty) {
+                let match = playerProfile.difficulty.match(/\d+/);
+                if (match) player.hp = parseInt(match[0]);
+            }
+            if (playerProfile.origin) {
+                player.inventory.push(`身世契约：${playerProfile.origin} x1`);
+            }
+            if (playerProfile.traits) {
+                player.inventory.push(`特质：${playerProfile.traits} x1`);
+            }
 
+            chatHistory = [`<p class='ai-msg'><strong>【1237年·七月初二】</strong><br>武林散修【${playerProfile.name || "无名少年"}】开启了他的专属神雕绘卷。</p>`];
+            enterGameInterface();
+            saveGame();
+        }
+    }
+
+    function wizardPrev(){
+        if(wizardStep === 0){
+            document.getElementById('lifeWizard').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'flex';
+        }
+        else{
+            saveProfile(); // 回退前也同步封存当前页修改
+            wizardStep--;
+            renderWizard();
+        }
+    }
 </script>
 </body>
 </html>
