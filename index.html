@@ -376,6 +376,13 @@
             display: block;
             margin-bottom: 8px;
         }
+        .setting-item label.checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: normal;
+            cursor: pointer;
+        }
         .volume-container {
             display: flex;
             align-items: center;
@@ -751,6 +758,29 @@
             font-style: italic;
             font-size: 14px;
         }
+        .stream-loading {
+            color: #8ab8d0;
+            font-size: 14px;
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* 动态生成提示 - 纯文字版 */
+        .generating-hint {
+            color: #7ae5ff;
+            font-size: 15px;
+            font-weight: normal;
+            display: inline-block;
+            animation: dotPulse 1.4s ease-in-out infinite;
+        }
+        @keyframes dotPulse {
+            0% { opacity: 0.4; letter-spacing: 0px; }
+            50% { opacity: 1; letter-spacing: 4px; }
+            100% { opacity: 0.4; letter-spacing: 0px; }
+        }
 
         .input-area {
             flex-shrink: 0;
@@ -877,20 +907,16 @@
         <div class="modal-content" style="width:min(500px,96%);">
             <h3 style="margin-bottom:15px; letter-spacing:2px;">【 更新日志 】</h3>
             <div style="text-align:left; color:#a9c6dc; line-height:1.8; font-size:14px; background:#0a1014; padding:15px; border-radius:5px; border:1px solid #283945;">
-                <p style="margin-top:0; font-weight:bold; color:#fff;">v1.0.7 简化开局</p>
+                <p style="margin-top:0; font-weight:bold; color:#fff;">v1.2.0 动态生成反馈 & 纯文字输出</p>
                 <ul style="margin:0; padding-left:20px;">
-                    <li>移除开局遮罩与“踏入江湖”按钮，打开即见主界面</li>
-                    <li>背景音乐仍通过右上角按钮手动控制</li>
+                    <li>流式输出时显示动态“正文正在生成中...”提示，带呼吸动画</li>
+                    <li>正文规则改为纯文字模式，不再输出任何HTML标签</li>
+                    <li>状态栏和语义协议调整为纯文本描述，无代码包裹</li>
                 </ul>
                 <hr style="border-color:#283945; margin:12px 0;">
-                <p style="font-weight:bold; color:#fff;">v1.0.6 修复与优化</p>
+                <p style="font-weight:bold; color:#fff;">v1.1.0 重构正文规则</p>
                 <ul style="margin:0; padding-left:20px;">
-                    <li>修复世界书触发词空值匹配全部的问题</li>
-                    <li>修复创角时气血可能为 undefined 的问题</li>
-                    <li>修复正文规则中占位符残留问题</li>
-                    <li>优化对话历史，自动保留最近 60 条</li>
-                    <li>增强各模块空值保护与错误处理</li>
-                    <li>改进移动端响应式布局</li>
+                    <li>将正文规则拆分为“状态栏协议”与“灵动正文语义协议”两个独立模块</li>
                 </ul>
             </div>
             <div style="display:flex; justify-content:center; margin-top:25px;">
@@ -923,9 +949,15 @@
                     </div>
                 </div>
                 <div class="setting-item" style="margin-top:20px; border-top:1px solid #283945; padding-top:20px;">
-                    <label for="replyLengthInput">📝 回复字数目标（建议 50~1000）</label>
-                    <input type="number" id="replyLengthInput" min="10" max="2000" value="200" style="width:140px; background:#0d1318; color:#ddd; border:1px solid #283945; border-radius:4px; padding:8px; font-size:16px;">
+                    <label for="replyLengthInput">📝 回复字数目标（100 ~ 20000）</label>
+                    <input type="number" id="replyLengthInput" min="100" max="20000" value="2000" style="width:160px; background:#0d1318; color:#ddd; border:1px solid #283945; border-radius:4px; padding:8px; font-size:16px;">
                     <span style="margin-left:10px; color:#7fa1b8;">字</span>
+                </div>
+                <div class="setting-item" style="margin-top:15px;">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="streamToggle" checked> 启用流式输出（边生成边显示）
+                    </label>
+                    <div style="font-size:13px; color:#7fa1b8; margin-top:5px;">正文逐字显示，状态命令等完整返回后处理</div>
                 </div>
             </div>
 
@@ -976,30 +1008,53 @@
                 <div id="lorebookItemsContainer" class="item-list-container"></div>
             </div>
 
-            <!-- 正文规则 -->
+            <!-- 正文规则 (纯文字模式) -->
             <div id="tab-body-rules" class="tab-panel">
                 <div style="font-size:14px; color:#a9c6dc; margin-bottom:15px; padding:10px; background:#0a1014; border-radius:4px; border:1px solid #283945;">
                     <p style="margin:0; line-height:1.6;">
-                        📌 这些协议不会写回主聊天预设；发送主聊天时由代码作为独立 system 消息注入。<br>
-                        关闭自定义时始终使用当前版本内置默认内容。
+                        📌 以下规则控制AI的叙事风格。当前设置为<b>纯文字模式</b>，AI不会输出任何HTML标签或语义标记。<br>
+                        下方两个模块可分别启用/禁用。
                     </p>
                 </div>
-                <div class="setting-item" style="margin-bottom:15px;">
-                    <label style="display:flex; justify-content:space-between; align-items:center; font-size:17px; cursor:pointer;">
-                        <span>启用正文规则</span>
+
+                <!-- ===== 模块一：正文开头状态栏协议（纯文字版） ===== -->
+                <div class="setting-item" style="border:1px solid #2a4050; border-radius:4px; padding:12px; margin-bottom:20px; background:#0d171f;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label style="font-size:17px; font-weight:bold; color:#b8d4e8;">📌 正文开头状态栏协议</label>
                         <label class="switch">
-                            <input type="checkbox" id="bodyRulesToggle">
+                            <input type="checkbox" id="statusBarToggle">
                             <span class="slider"></span>
                         </label>
-                    </label>
+                    </div>
+                    <div style="font-size:13px; color:#7fa1b8; margin-bottom:10px;">
+                        约束每轮正文开头用纯文字交代时间、地点、天气。
+                    </div>
+                    <label for="statusBarContent" style="font-size:14px; color:#a9c6dc; display:block; margin-bottom:4px;">协议内容：</label>
+                    <textarea id="statusBarContent" rows="6" style="width:100%; background:#0d1318; color:#ddd; border:1px solid #283945; border-radius:4px; padding:8px; box-sizing:border-box; font-family:'Microsoft YaHei',sans-serif; resize:vertical; font-size:14px;"></textarea>
+                    <div style="font-size:12px; color:#5c7a8a; margin-top:4px;">
+                        可用变量：<code>${'${current_time}'}</code> <code>${'${current_location}'}</code> <code>${'${season}'}</code> <code>${'${weather}'}</code>
+                    </div>
                 </div>
-                <div class="setting-item">
-                    <label for="bodyRulesContent" style="font-size:17px;">📄 协议内容：</label>
-                    <textarea id="bodyRulesContent" rows="16" style="width:100%; background:#0d1318; color:#ddd; border:1px solid #283945; border-radius:4px; padding:8px; box-sizing:border-box; font-family:'Microsoft YaHei',sans-serif; resize:vertical; font-size:15px;"></textarea>
+
+                <!-- ===== 模块二：灵动正文语义渲染协议（纯文字版） ===== -->
+                <div class="setting-item" style="border:1px solid #2a4050; border-radius:4px; padding:12px; margin-bottom:20px; background:#0d171f;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label style="font-size:17px; font-weight:bold; color:#b8d4e8;">✨ 叙事风格协议</label>
+                        <label class="switch">
+                            <input type="checkbox" id="semanticToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div style="font-size:13px; color:#7fa1b8; margin-bottom:10px;">
+                        约束正文的叙事风格、文笔节奏与氛围塑造（纯文字，无HTML）。
+                    </div>
+                    <label for="semanticContent" style="font-size:14px; color:#a9c6dc; display:block; margin-bottom:4px;">协议内容：</label>
+                    <textarea id="semanticContent" rows="8" style="width:100%; background:#0d1318; color:#ddd; border:1px solid #283945; border-radius:4px; padding:8px; box-sizing:border-box; font-family:'Microsoft YaHei',sans-serif; resize:vertical; font-size:14px;"></textarea>
                 </div>
+
                 <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px; flex-wrap:wrap;">
                     <button class="btn-small" onclick="resetBodyRules()" style="background:#44525d;">恢复默认</button>
-                    <button class="btn-small" onclick="saveBodyRules()" style="background:#3ca085;">保存自定义</button>
+                    <button class="btn-small" onclick="saveBodyRules()" style="background:#3ca085;">保存全部规则</button>
                 </div>
             </div>
 
@@ -1081,8 +1136,11 @@
         let presetList = [];
         let lorebookList = [];
 
-        let bodyRulesEnabled = false;
-        let bodyRulesContent = '';
+        // 正文规则拆分为两个独立模块（纯文字版）
+        let statusBarEnabled = true;
+        let statusBarContent = '';
+        let semanticEnabled = true;
+        let semanticContent = '';
 
         let wizardStep = 0;
         let playerProfile = {
@@ -1097,46 +1155,50 @@
         let currentEditType = '';
         let currentEditIndex = -1;
 
+        // 流式开关
+        let streamEnabled = true;
+
         // ============================================================
-        //  默认数据
+        //  默认数据（纯文字版，不含任何HTML标签）
         // ============================================================
-        const defaultBodyRules = `# 灵动正文·语义渲染协议
+        const defaultStatusBar = `# 正文开头状态栏协议（纯文字）
 
-直接在正文中输出可渲染HTML。禁止用Markdown代码块包裹。
-本条目的目标不是给文字随意上色，而是用少量语义HTML帮前端识别正文结构；最终颜色、纹理、昼夜模式、字体层级全部由前端.mortal-prose-*样式控制。
-若外层格式要求正文包在<content>...</content>内，本条仍然生效：所有语义HTML都写在<content>内。<branches>、<battle>、<dual_cultivation>、状态栏<ui_sys>和修炼结算占位符<cultivation_card>不使用灵动正文语义标签。
+每轮正文开头，请先用一段自然文字交代当前的时间、地点和天气，作为场景的「状态栏」。不要使用任何HTML标签、代码块或特殊符号。
 
-# 总体审美
-风格必须清雅、克制、沉浸，有玉简批注、竹简留痕、卷轴正文之感。
-不要锐利、黑暗、戏剧化、霓虹、重阴影、强闪光。
-普通叙事仍以自然段为主，不要把每句话都包装成视觉块。
-语义标签服务叙事节奏，不服务炫技。
-
-# 正文开头状态栏协议
-
-约束每轮正文最顶部的 <ui_sys> 时间地点状态栏、正文内 scene_checkpoint 与 content 顺序。
-
-可用变量（由前端在发送时替换）：
+可用信息（由前端在发送时替换）：
 - current_time   → 当前时辰
 - current_location → 当前地点
 - season         → 当前季节
 - weather        → 当前天气
 
-# 硬性输出顺序
+# 格式要求
 
-- 每轮最终可见输出第一段必须是一个且仅一个 <ui_sys>...</ui_sys> 状态栏。
-- <ui_sys> 必须位于 <content> 之前；不得写进 <content> 内。
-- 普通非接管回合顺序固定为：<ui_sys>...</ui_sys> → <content>...</content> → <branches>...</branches>。
-- 战斗触发回合顺序固定为：<ui_sys>...</ui_sys> → <content>...</content> → <battle> 或战斗结算块。
-- 双修触发回合顺序固定为：<ui_sys>...</ui_sys> → <content>...</content> → <dual_cultivation...></dual_cultivation>。
-- 不要在 <ui_sys> 之前输出解释、标题、Markdown、思维链、剧情设计注释或空白引导语。
+- 直接用自然语言描述，例如："午时三刻，终南山脚下，暑气蒸腾。"
+- 一段话即可，简洁明了。
+- 不要使用任何代码块、尖括号、方括号或特殊标记。
+- 状态栏之后直接接正文内容，不需要额外分隔符。`;
 
-# 状态栏格式
+        const defaultSemantic = `# 叙事风格协议（纯文字）
 
-- 直接输出 HTML，不使用 Markdown 代码块包裹。
-- 时间格式：使用自然时辰描述，如"午时三刻"、"子时"、"黄昏"。
-- 禁止输出星期、周几、子时、辰时等传统时辰。
-- <ui_sys> 时间后只允许直接换行 <br>，禁止追加 <br>（10 分钟后）、（半生香后）、（数日后）等相对时间括号。`;
+你是金庸武侠世界的沉浸式叙事助手。你的每一次回复都是面向用户的完整叙事正文，以自然流畅的中文段落呈现。
+
+# 核心要求
+
+- 只输出纯文字内容，不使用任何HTML标签、Markdown语法、代码块或特殊符号。
+- 语言风格：古典武侠风，带有传统评书和章回小说的韵味。
+- 多用动作描写、环境渲染、心理刻画，富有江湖气息。
+- 避免现代化或口语化词汇。
+- 叙事节奏张弛有度，场景描写细腻，对话生动自然。
+
+# 绝对禁止
+
+- 禁止输出任何HTML标签（如 <p>、<div>、<span> 等）
+- 禁止输出 Markdown 代码块、反引号、星号等格式化符号
+- 禁止输出注释、草稿、思考过程、自我对话
+- 禁止输出括号内的说明、星号动作（如 *清了清嗓子*）
+- 禁止输出任何非故事本身的文字（如"你听见自己碎碎念"之类）
+
+你必须在内部完成构思，只将最终故事以纯文字形式输出给用户。每次回答直接以动作、对话或环境描写开头。`;
 
         const defaultPresets = [{
             id: "p1",
@@ -1247,16 +1309,34 @@
                 if (lenInput) lenInput.value = savedLength;
             }
 
-            // 正文规则
-            const rulesEnabled = localStorage.getItem('sd_body_rules_enabled');
-            bodyRulesEnabled = rulesEnabled === 'true';
-            const rulesToggle = getEl('bodyRulesToggle');
-            if (rulesToggle) rulesToggle.checked = bodyRulesEnabled;
+            // 流式开关
+            const savedStream = localStorage.getItem('sd_stream_enabled');
+            streamEnabled = savedStream !== null ? savedStream === 'true' : true;
+            const streamToggle = getEl('streamToggle');
+            if (streamToggle) streamToggle.checked = streamEnabled;
 
-            const savedRulesContent = localStorage.getItem('sd_body_rules_content');
-            bodyRulesContent = savedRulesContent !== null ? savedRulesContent : defaultBodyRules;
-            const rulesContentEl = getEl('bodyRulesContent');
-            if (rulesContentEl) rulesContentEl.value = bodyRulesContent;
+            // ===== 正文规则（双模块，纯文字版） =====
+            // 状态栏
+            const savedStatusEnabled = localStorage.getItem('sd_statusbar_enabled');
+            statusBarEnabled = savedStatusEnabled !== null ? savedStatusEnabled === 'true' : true;
+            const statusToggle = getEl('statusBarToggle');
+            if (statusToggle) statusToggle.checked = statusBarEnabled;
+
+            const savedStatusContent = localStorage.getItem('sd_statusbar_content');
+            statusBarContent = savedStatusContent !== null ? savedStatusContent : defaultStatusBar;
+            const statusContentEl = getEl('statusBarContent');
+            if (statusContentEl) statusContentEl.value = statusBarContent;
+
+            // 语义协议
+            const savedSemanticEnabled = localStorage.getItem('sd_semantic_enabled');
+            semanticEnabled = savedSemanticEnabled !== null ? savedSemanticEnabled === 'true' : true;
+            const semanticToggle = getEl('semanticToggle');
+            if (semanticToggle) semanticToggle.checked = semanticEnabled;
+
+            const savedSemanticContent = localStorage.getItem('sd_semantic_content');
+            semanticContent = savedSemanticContent !== null ? savedSemanticContent : defaultSemantic;
+            const semanticContentEl = getEl('semanticContent');
+            if (semanticContentEl) semanticContentEl.value = semanticContent;
 
             // 预设 & 世界书
             const storedPreset = localStorage.getItem('sd_preset_list');
@@ -1286,31 +1366,52 @@
         };
 
         // ============================================================
-        //  正文规则独立操作
+        //  正文规则（双模块）操作
         // ============================================================
         function saveBodyRules() {
-            const contentEl = getEl('bodyRulesContent');
-            const toggleEl = getEl('bodyRulesToggle');
-            if (!contentEl || !toggleEl) return;
-            const content = contentEl.value.trim();
-            const enabled = toggleEl.checked;
-            bodyRulesContent = content || defaultBodyRules;
-            bodyRulesEnabled = enabled;
-            localStorage.setItem('sd_body_rules_enabled', String(enabled));
-            localStorage.setItem('sd_body_rules_content', bodyRulesContent);
-            alert('✅ 正文规则已保存！');
+            const statusToggle = getEl('statusBarToggle');
+            const statusContentEl = getEl('statusBarContent');
+            const semanticToggle = getEl('semanticToggle');
+            const semanticContentEl = getEl('semanticContent');
+
+            if (statusToggle && statusContentEl) {
+                statusBarEnabled = statusToggle.checked;
+                statusBarContent = statusContentEl.value.trim() || defaultStatusBar;
+                localStorage.setItem('sd_statusbar_enabled', String(statusBarEnabled));
+                localStorage.setItem('sd_statusbar_content', statusBarContent);
+            }
+
+            if (semanticToggle && semanticContentEl) {
+                semanticEnabled = semanticToggle.checked;
+                semanticContent = semanticContentEl.value.trim() || defaultSemantic;
+                localStorage.setItem('sd_semantic_enabled', String(semanticEnabled));
+                localStorage.setItem('sd_semantic_content', semanticContent);
+            }
+
+            alert('✅ 正文规则已全部保存！');
         }
 
         function resetBodyRules() {
-            if (!confirm('恢复默认将覆盖当前内容，确定吗？')) return;
-            bodyRulesContent = defaultBodyRules;
-            bodyRulesEnabled = true;
-            const contentEl = getEl('bodyRulesContent');
-            const toggleEl = getEl('bodyRulesToggle');
-            if (contentEl) contentEl.value = defaultBodyRules;
-            if (toggleEl) toggleEl.checked = true;
-            localStorage.setItem('sd_body_rules_enabled', 'true');
-            localStorage.setItem('sd_body_rules_content', defaultBodyRules);
+            if (!confirm('恢复默认将覆盖当前所有正文规则，确定吗？')) return;
+
+            statusBarContent = defaultStatusBar;
+            statusBarEnabled = true;
+            const statusToggle = getEl('statusBarToggle');
+            const statusContentEl = getEl('statusBarContent');
+            if (statusToggle) statusToggle.checked = true;
+            if (statusContentEl) statusContentEl.value = defaultStatusBar;
+            localStorage.setItem('sd_statusbar_enabled', 'true');
+            localStorage.setItem('sd_statusbar_content', defaultStatusBar);
+
+            semanticContent = defaultSemantic;
+            semanticEnabled = true;
+            const semanticToggle = getEl('semanticToggle');
+            const semanticContentEl = getEl('semanticContent');
+            if (semanticToggle) semanticToggle.checked = true;
+            if (semanticContentEl) semanticContentEl.value = defaultSemantic;
+            localStorage.setItem('sd_semantic_enabled', 'true');
+            localStorage.setItem('sd_semantic_content', defaultSemantic);
+
             alert('✅ 已恢复默认正文规则。');
         }
 
@@ -1606,11 +1707,19 @@
             if (!modal) return;
             if (show) {
                 modal.classList.add('active');
-                // 刷新内容
-                const rulesToggle = getEl('bodyRulesToggle');
-                const rulesContent = getEl('bodyRulesContent');
-                if (rulesToggle) rulesToggle.checked = bodyRulesEnabled;
-                if (rulesContent) rulesContent.value = bodyRulesContent;
+                // 刷新所有设置值
+                const statusToggle = getEl('statusBarToggle');
+                const statusContent = getEl('statusBarContent');
+                if (statusToggle) statusToggle.checked = statusBarEnabled;
+                if (statusContent) statusContent.value = statusBarContent;
+
+                const semanticToggle = getEl('semanticToggle');
+                const semanticContent = getEl('semanticContent');
+                if (semanticToggle) semanticToggle.checked = semanticEnabled;
+                if (semanticContent) semanticContent.value = semanticContent;
+
+                const streamToggle = getEl('streamToggle');
+                if (streamToggle) streamToggle.checked = streamEnabled;
             } else {
                 modal.classList.remove('active');
             }
@@ -1628,6 +1737,7 @@
             const keyInput = getEl('apiKeyInput');
             const modelSelect = getEl('modelSelect');
             const lengthInput = getEl('replyLengthInput');
+            const streamToggle = getEl('streamToggle');
 
             if (urlInput) localStorage.setItem('sd_api_url', urlInput.value.trim());
             if (keyInput) localStorage.setItem('sd_api_key', keyInput.value.trim());
@@ -1640,21 +1750,36 @@
 
             if (lengthInput) {
                 const val = parseInt(lengthInput.value);
-                if (!isNaN(val) && val > 0) {
+                if (!isNaN(val) && val >= 100 && val <= 20000) {
                     localStorage.setItem('sd_reply_length', String(val));
+                } else {
+                    alert('字数请设置在 100~20000 之间');
+                    return;
                 }
             }
 
-            // 正文规则
-            const rulesContent = getEl('bodyRulesContent');
-            const rulesToggle = getEl('bodyRulesToggle');
-            if (rulesContent && rulesToggle) {
-                const content = rulesContent.value.trim();
-                const enabled = rulesToggle.checked;
-                bodyRulesContent = content || defaultBodyRules;
-                bodyRulesEnabled = enabled;
-                localStorage.setItem('sd_body_rules_enabled', String(enabled));
-                localStorage.setItem('sd_body_rules_content', bodyRulesContent);
+            if (streamToggle) {
+                streamEnabled = streamToggle.checked;
+                localStorage.setItem('sd_stream_enabled', String(streamEnabled));
+            }
+
+            // 保存正文规则（双模块）
+            const statusToggle = getEl('statusBarToggle');
+            const statusContentEl = getEl('statusBarContent');
+            if (statusToggle && statusContentEl) {
+                statusBarEnabled = statusToggle.checked;
+                statusBarContent = statusContentEl.value.trim() || defaultStatusBar;
+                localStorage.setItem('sd_statusbar_enabled', String(statusBarEnabled));
+                localStorage.setItem('sd_statusbar_content', statusBarContent);
+            }
+
+            const semanticToggle = getEl('semanticToggle');
+            const semanticContentEl = getEl('semanticContent');
+            if (semanticToggle && semanticContentEl) {
+                semanticEnabled = semanticToggle.checked;
+                semanticContent = semanticContentEl.value.trim() || defaultSemantic;
+                localStorage.setItem('sd_semantic_enabled', String(semanticEnabled));
+                localStorage.setItem('sd_semantic_content', semanticContent);
             }
 
             alert('设置已成功安全封存入本地！');
@@ -2055,7 +2180,7 @@
         }
 
         // ============================================================
-        //  核心对话功能
+        //  核心对话功能（流式 + 动态反馈 + 纯文字输出）
         // ============================================================
         function buildSystemPrompt(userInput) {
             let parts = [];
@@ -2064,7 +2189,6 @@
                     parts.push(item.content);
                 }
             });
-            // 世界书：仅当 trigger 非空且用户输入包含 trigger 时才触发
             lorebookList.forEach(item => {
                 if (item.enabled && item.trigger && item.content && userInput.includes(item.trigger)) {
                     parts.push(item.content);
@@ -2072,10 +2196,10 @@
             });
 
             const lengthInput = getEl('replyLengthInput');
-            let length = 200;
+            let length = 2000;
             if (lengthInput) {
                 const val = parseInt(lengthInput.value);
-                if (!isNaN(val) && val > 0) length = val;
+                if (!isNaN(val) && val >= 100 && val <= 20000) length = val;
             }
             parts.push(`请控制回复字数在 ${length} 字左右。`);
 
@@ -2102,11 +2226,9 @@
 
             conversation.push({ role: 'user', content: userText });
 
+            // 移除旧的加载指示器
             const oldLoading = getEl('loadingIndicator');
             if (oldLoading) oldLoading.remove();
-            const loadingHtml = `<p id="loadingIndicator" class="sys-msg">⏳ 正在生成回复...</p>`;
-            cb.innerHTML += loadingHtml;
-            cb.scrollTop = cb.scrollHeight;
 
             const systemPrompt = buildSystemPrompt(userText);
 
@@ -2118,39 +2240,49 @@
             const apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
             const model = modelSelect ? modelSelect.value : '';
 
-            // 若未配置 API，使用本地模拟
+            // 若未配置 API，使用本地模拟（不支持流式）
             if (!apiUrl || !apiKey || !model) {
                 const mockReply = "（未配置 API，系统启用本地沙盒）\n你说了：“" + userText + "”，但江湖风云未动，请先在天机阁配置好接口。";
                 const aiHtml = `<p class="ai-msg"><strong>系统：</strong>${escapeHtml(mockReply)}</p>`;
-                const loading = getEl('loadingIndicator');
-                if (loading) loading.remove();
                 appendAIResponse(aiHtml, mockReply);
                 return;
             }
 
-            // 构建消息列表，正文规则作为独立 system 消息
+            // 构建消息列表，注入双正文规则（纯文字版）
             const messages = [
                 { role: 'system', content: systemPrompt }
             ];
-            if (bodyRulesEnabled && bodyRulesContent) {
-                messages.push({ role: 'system', content: bodyRulesContent });
+
+            if (statusBarEnabled && statusBarContent) {
+                messages.push({ role: 'system', content: statusBarContent });
             }
+
+            if (semanticEnabled && semanticContent) {
+                messages.push({ role: 'system', content: semanticContent });
+            }
+
             messages.push(...conversation);
+
+            const sendBtn = cb.parentElement.querySelector('.btn-action');
+            if (sendBtn) sendBtn.disabled = true;
 
             try {
                 const baseUrl = apiUrl.replace(/\/+$/, '');
+                const useStream = streamEnabled;
+
                 const response = await fetch(`${baseUrl}/chat/completions`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${apiKey}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': useStream ? 'text/event-stream' : 'application/json'
                     },
                     body: JSON.stringify({
                         model: model,
                         messages: messages,
                         temperature: 0.7,
-                        max_tokens: 800,
-                        stream: false
+                        max_tokens: 4000,
+                        stream: useStream
                     })
                 });
 
@@ -2158,15 +2290,110 @@
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
-                const data = await response.json();
-                if (data.choices && data.choices.length > 0) {
-                    const aiContent = data.choices[0].message.content;
-                    const aiHtml = `<p class="ai-msg"><strong>AI：</strong>${escapeHtml(aiContent)}</p>`;
+                if (useStream) {
+                    // --- 流式处理 + 动态反馈 ---
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder('utf-8');
+                    let fullContent = '';
+                    let buffer = '';
+
                     const loading = getEl('loadingIndicator');
                     if (loading) loading.remove();
-                    appendAIResponse(aiHtml, aiContent);
+
+                    // 先插入一个动态的“正文正在生成中...”提示
+                    const hintId = 'generating-hint-' + Date.now();
+                    const hintHtml = `
+                        <p id="${hintId}" class="ai-msg">
+                            <span class="generating-hint">✦ 正文正在生成中</span>
+                        </p>
+                    `;
+                    cb.innerHTML += hintHtml;
+                    cb.scrollTop = cb.scrollHeight;
+
+                    // 准备流式内容容器（先隐藏，等有数据时再显示并替换提示）
+                    const streamId = 'stream-' + Date.now();
+                    const streamHtml = `
+                        <p id="${streamId}" class="ai-msg" style="display:none;">
+                            <strong>AI：</strong>
+                            <span id="${streamId}-content"></span>
+                            <span id="${streamId}-cursor" class="stream-loading">▍</span>
+                        </p>
+                    `;
+                    cb.innerHTML += streamHtml;
+                    const contentSpan = getEl(streamId + '-content');
+                    const cursorSpan = getEl(streamId + '-cursor');
+                    const streamContainer = getEl(streamId);
+
+                    let hasReceivedData = false;
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        buffer += decoder.decode(value, { stream: true });
+                        const lines = buffer.split('\n');
+                        buffer = lines.pop() || '';
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const data = line.slice(6).trim();
+                                if (data === '[DONE]') continue;
+                                try {
+                                    const parsed = JSON.parse(data);
+                                    const delta = parsed.choices?.[0]?.delta?.content;
+                                    if (delta) {
+                                        // 第一次收到数据时：隐藏提示，显示流式容器
+                                        if (!hasReceivedData) {
+                                            hasReceivedData = true;
+                                            const hintEl = getEl(hintId);
+                                            if (hintEl) hintEl.style.display = 'none';
+                                            if (streamContainer) streamContainer.style.display = 'block';
+                                        }
+                                        fullContent += delta;
+                                        if (contentSpan) {
+                                            contentSpan.textContent = fullContent;
+                                            cb.scrollTop = cb.scrollHeight;
+                                        }
+                                    }
+                                } catch (_) { /* 忽略非JSON行 */ }
+                            }
+                        }
+                    }
+
+                    // 如果一直没收到数据，移除提示并显示错误
+                    if (!hasReceivedData) {
+                        const hintEl = getEl(hintId);
+                        if (hintEl) hintEl.remove();
+                        fullContent = '（AI 未返回任何内容，请重试或检查 API 配置）';
+                    }
+
+                    if (cursorSpan) cursorSpan.remove();
+
+                    // 流结束，用最终内容替换临时元素
+                    const finalHtml = `<p class="ai-msg"><strong>AI：</strong>${escapeHtml(fullContent)}</p>`;
+                    const tempEl = getEl(streamId);
+                    const hintEl = getEl(hintId);
+                    if (hintEl) hintEl.remove();
+                    if (tempEl) tempEl.remove();
+
+                    cb.innerHTML += finalHtml;
+                    chatHistory.push(finalHtml);
+                    conversation.push({ role: 'assistant', content: fullContent });
+                    truncateConversation();
+                    saveGame();
+                    cb.scrollTop = cb.scrollHeight;
+
                 } else {
-                    throw new Error('API 返回数据格式错误');
+                    // --- 非流式 ---
+                    const data = await response.json();
+                    const loading = getEl('loadingIndicator');
+                    if (loading) loading.remove();
+
+                    if (data.choices && data.choices.length > 0) {
+                        const aiContent = data.choices[0].message.content;
+                        const aiHtml = `<p class="ai-msg"><strong>AI：</strong>${escapeHtml(aiContent)}</p>`;
+                        appendAIResponse(aiHtml, aiContent);
+                    } else {
+                        throw new Error('API 返回数据格式错误');
+                    }
                 }
             } catch (error) {
                 console.error('对话错误:', error);
@@ -2174,12 +2401,17 @@
                 const errHtml = `<p class="sys-msg">${escapeHtml(errMsg)}</p>`;
                 const loading = getEl('loadingIndicator');
                 if (loading) loading.remove();
+                // 移除可能残留的提示
+                const hintEls = cb.querySelectorAll('[id^="generating-hint-"]');
+                hintEls.forEach(el => el.remove());
                 const cb2 = getEl('chatBox');
                 if (cb2) {
                     cb2.innerHTML += errHtml;
                     chatHistory.push(errHtml);
                     cb2.scrollTop = cb2.scrollHeight;
                 }
+            } finally {
+                if (sendBtn) sendBtn.disabled = false;
             }
         }
 
@@ -2201,7 +2433,7 @@
         // ============================================================
         //  控制台提示
         // ============================================================
-        console.log('🐉 神雕侠侣 · 武侠绘卷 已加载 (v1.0.7) — 开局遮罩已移除');
+        console.log('🐉 神雕侠侣 · 武侠绘卷 已加载 (v1.2.0) — 动态生成反馈 + 纯文字输出');
     </script>
 
 </body>
