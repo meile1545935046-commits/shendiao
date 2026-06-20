@@ -119,6 +119,20 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
         .modal-content { background: #162029; border: 2px solid #3a4f5e; padding: 25px; border-radius: 8px; width: 650px; max-height: 85vh; overflow-y: auto; text-align: center; box-sizing: border-box; box-shadow: 0 0 30px rgba(0,0,0,0.7); }
         
+        /* ===== 设置界面全屏专用样式 ===== */
+        #settingsModal .modal-content {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 0;
+            padding: 25px 30px;
+            margin: 0;
+            border: none;
+            box-shadow: none;
+            background: #162029;
+        }
+
         /* ===== 系统设置专用样式 ===== */
         .settings-tabs { display: flex; gap: 5px; border-bottom: 1px solid #283945; margin-bottom: 15px; padding-bottom: 5px; }
         .tab-btn { flex: 1; padding: 10px 0; background: #0a1014; color: #7fa1b8; border: 1px solid #283945; cursor: pointer; font-size: 13px; border-radius: 4px 4px 0 0; }
@@ -155,19 +169,118 @@
         .card-edit-area { width: 100%; background: #0d1318; color: #ddd; border: 1px solid #283945; border-radius: 3px; padding: 6px; box-sizing: border-box; font-size: 12px; resize: vertical; font-family: monospace; }
         .card-edit-area:focus { border-color: #5c84a0; outline: none; }
 
-        /* ===== 游戏核心界面 ===== */
-        #gameScreen { display: none; max-width: 800px; margin: 40px auto; padding: 20px; }
-        .game-container { display: grid; grid-template-columns: 250px 1fr; gap: 20px; }
-        .panel { border: 2px solid #3a4f5e; padding: 15px; background-color: #162029; border-radius: 8px; }
-        h3 { color: #a9c6dc; border-bottom: 1px solid #283945; padding-bottom: 5px; margin-top: 0; }
-        .chat-box { height: 350px; overflow-y: auto; background: #0d1318; padding: 15px; border: 1px solid #283945; margin-bottom: 15px; }
+        /* ===== 游戏核心界面（全屏固定，侧边栏+聊天区） ===== */
+        #gameScreen { 
+            display: none; 
+            width: 100%; 
+            height: 100vh; 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            overflow: hidden; 
+            background-color: #0d1316;
+        }
+        
+        /* 顶部栏 */
+        #gameScreen > div:first-child {
+            padding: 10px 20px;
+            background-color: #0d1316;
+            border-bottom: 1px solid #283945;
+            height: 55px;
+            box-sizing: border-box;
+        }
+
+        .game-container { 
+            display: grid; 
+            grid-template-columns: 280px 1fr;
+            gap: 0;
+            width: 100%; 
+            max-width: 100%; 
+            height: calc(100vh - 55px);
+            padding: 20px; 
+            box-sizing: border-box;
+            grid-template-rows: 1fr;
+        }
+
+        .panel:first-child {
+            background-color: #162029;
+            border: 2px solid #3a4f5e;
+            border-radius: 8px 0 0 8px;
+            padding: 15px;
+            height: 100%;
+            overflow-y: auto;
+            margin-right: 0;
+            border-right: none;
+        }
+
+        .panel:last-child {
+            background-color: #162029;
+            border: 2px solid #3a4f5e;
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        h3 { 
+            color: #a9c6dc; 
+            border-bottom: 1px solid #283945; 
+            padding-bottom: 8px; 
+            margin-top: 0; 
+            margin-bottom: 12px;
+        }
+
+        .chat-box { 
+            flex: 1 1 0;
+            min-height: 0; 
+            overflow-y: auto; 
+            background: #0d1318; 
+            padding: 15px; 
+            border: 1px solid #283945; 
+            margin-bottom: 15px; 
+            border-radius: 4px;
+        }
+        
+        .input-area {
+            flex-shrink: 0;
+            display: flex;
+            gap: 10px;
+        }
+
         .user-msg { color: #52afaf; margin: 5px 0; }
         .ai-msg { color: #a9c6dc; margin: 5px 0; }
         .sys-msg { color: #4fa1c0; font-style: italic; font-size: 13px; }
-        .input-area { display: flex; gap: 10px; }
+        
         button.btn-action { background: #2c4253; color: #fff; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 4px; }
         button.btn-action:hover { background: #3a566b; }
         .highlight { color: #7ae5ff; }
+
+        .input-area input {
+            padding: 10px; 
+            background: #1a2630; 
+            color: #fff; 
+            border: 1px solid #3a4f5e; 
+            border-radius: 4px; 
+            flex: 1;
+        }
+        .input-area input:focus {
+            outline: none;
+            border-color: #5c84a0;
+        }
+
+        #inventory {
+            padding-left: 20px; 
+            font-size: 14px;
+            margin: 0;
+        }
+        #inventory li {
+            margin-bottom: 4px;
+        }
+        .panel p {
+            margin: 8px 0;
+        }
     </style>
 </head>
 <body>
@@ -305,7 +418,7 @@
 </div>
 
 <div id="gameScreen">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 20px; height:55px; box-sizing:border-box; background-color:#0d1316; border-bottom:1px solid #283945;">
         <button class="btn-action" style="background:#44525d; padding:5px 15px;" onclick="returnToMain()">返回主页</button>
         <h2 style="color: #a9c6dc; margin: 0; text-shadow: 1px 1px 2px #000;">神雕侠侣</h2>
         <div style="color:#7fa1b8; font-size:12px;">自动保存已开启 ✨</div>
@@ -317,14 +430,15 @@
             <p>气血: <span id="hp" class="highlight">100</span></p>
             <p>内力: <span id="mp" class="highlight">50</span> / 50</p>
             <p>修为: <span id="exp" class="highlight">0</span></p>
-            <h3>【 背包物品 】</h3>
-            <ul id="inventory" style="padding-left: 20px; font-size: 14px;"></ul>
+            <h3 style="margin-top:20px;">【 背包物品 】</h3>
+            <ul id="inventory"></ul>
         </div>
+        
         <div class="panel">
             <h3>【 当前场景：终南山下 】</h3>
             <div id="chatBox" class="chat-box"></div>
             <div class="input-area">
-                <input type="text" id="userInput" style="padding:10px; background:#1a2630; color:#fff; border:1px solid #3a4f5e; border-radius:4px; flex:1;" placeholder="输入你的应对之策..." onkeydown="if(event.key==='Enter')sendMessage()">
+                <input type="text" id="userInput" placeholder="输入你的应对之策..." onkeydown="if(event.key==='Enter')sendMessage()">
                 <button class="btn-action" onclick="sendMessage()">交互</button>
             </div>
         </div>
@@ -341,8 +455,9 @@
     let lorebookList = [];
 
     let wizardStep = 0;
-    // 默认数据初始化
     let playerProfile = { name: "", gender: "男", age: 16, difficulty: "普通", origin: "武林世家", traits: "骨骼清奇" };
+
+    let conversation = [];
 
     const defaultPresets = [
         { id: "p1", name: "原著内核绑定", tag: "system", content: `你需要按照用户在【正文预设】中启用的预设进行回复，预设不仅用于显示，而是作为系统提示词参与每次对话。默认预设1：双人成行风格。要求：像酒馆角色卡一样进行沉浸式叙事，保持人物塑造、环境描写、连续记忆、剧情推进和角色逻辑，不要将自己当作助手解释，而是直接进入故事或对话。`, enabled: true },
@@ -375,18 +490,202 @@
             document.getElementById('btnContinue').disabled = false;
         }
         document.getElementById('bgMusic').volume = 0.5;document.getElementById('startScreen').style.display='block';
+
+        const savedConv = localStorage.getItem('sd_conversation');
+        if (savedConv) {
+            try { conversation = JSON.parse(savedConv); } catch(e) { conversation = []; }
+        }
     }
 
-    /* JSON 智能解析导入和列表管理机制省略... */
-    function handleJsonImport(inputElement, type) { /*...*/ }
-    function renderPromptList(type) { /*...*/ }
-    function toggleItem(type, index, isChecked) { /*...*/ }
-    function moveItem(type, index, direction) { /*...*/ }
-    function updateItemContent(type, index, newVal) { /*...*/ }
-    function updateItemTrigger(index, newVal) { /*...*/ }
-    function addNewPromptItem(type) { /*...*/ }
-    function deleteItem(type, index) { /*...*/ }
-    function resetDefaultItems(type) { /*...*/ }
+    // ========== 优化后的导入函数 ==========
+    function handleJsonImport(inputElement, type) {
+        const file = inputElement.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const rawData = JSON.parse(e.target.result);
+                let items = null;
+                // 1. 如果是纯数组
+                if (Array.isArray(rawData)) {
+                    items = rawData;
+                }
+                // 2. 如果是对象且包含 prompts 数组（酒馆预设导出格式）
+                else if (rawData.prompts && Array.isArray(rawData.prompts)) {
+                    items = rawData.prompts;
+                } else {
+                    alert('JSON 格式错误：必须为数组或包含 prompts 数组的对象。');
+                    return;
+                }
+
+                if (!items || items.length === 0) {
+                    alert('未找到有效条目。');
+                    return;
+                }
+
+                // 映射并验证：要求每个条目至少有 name 和 content，id 缺失则自动生成
+                const mapped = items.map(item => {
+                    const id = item.id || item.identifier || Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
+                    const name = (item.name || '').trim();
+                    const content = (item.content || '').trim();
+                    if (!name || !content) {
+                        // 跳过缺少 name 或 content 的条目
+                        return null;
+                    }
+                    return {
+                        id: id,
+                        name: name,
+                        content: content,
+                        enabled: item.enabled !== undefined ? item.enabled : true,
+                        tag: item.tag || item.role || 'default',
+                        // 如果是 lorebook，保留 trigger
+                        ...(type === 'lorebook' && item.trigger ? { trigger: item.trigger } : {})
+                    };
+                }).filter(item => item !== null);
+
+                if (mapped.length === 0) {
+                    alert('所有条目都缺少 name 或 content 字段，导入失败。');
+                    return;
+                }
+
+                if (type === 'preset') {
+                    presetList = mapped;
+                    localStorage.setItem('sd_preset_list', JSON.stringify(presetList));
+                } else if (type === 'lorebook') {
+                    // 检查是否都有 trigger
+                    const validLore = mapped.every(item => item.trigger !== undefined);
+                    if (!validLore) {
+                        alert('世界书条目缺少 "trigger" 字段。');
+                        return;
+                    }
+                    lorebookList = mapped;
+                    localStorage.setItem('sd_lorebook_list', JSON.stringify(lorebookList));
+                }
+                renderPromptList(type);
+                alert(`✅ 成功导入 ${mapped.length} 条${type === 'preset' ? '预设' : '世界书'}！`);
+            } catch (error) {
+                alert('❌ 解析 JSON 失败：' + error.message);
+            }
+        };
+        reader.readAsText(file);
+        inputElement.value = '';
+    }
+
+    function renderPromptList(type) {
+        const container = document.getElementById(type === 'preset' ? 'presetItemsContainer' : 'lorebookItemsContainer');
+        const list = type === 'preset' ? presetList : lorebookList;
+        if (!container) return;
+        if (!list || list.length === 0) {
+            container.innerHTML = `<div style="color:#667580; text-align:center; padding:20px;">暂无条目，请添加或导入</div>`;
+            return;
+        }
+        let html = '';
+        list.forEach((item, index) => {
+            const isLore = type === 'lorebook';
+            const disabledClass = item.enabled ? '' : 'disabled-card';
+            html += `
+                <div class="prompt-item-card ${disabledClass}" data-index="${index}">
+                    <div class="card-top-row">
+                        <div class="card-meta">
+                            <span style="font-weight:bold;">${escapeHtml(item.name)}</span>
+                            <span class="card-tag">${escapeHtml(item.tag || 'default')}</span>
+                            ${isLore ? `<span class="card-tag" style="background:#3a566b;">触发词: ${escapeHtml(item.trigger || '')}</span>` : ''}
+                        </div>
+                        <div class="card-controls">
+                            <button class="arrow-btn" onclick="moveItem('${type}', ${index}, -1)" title="上移">⬆</button>
+                            <button class="arrow-btn" onclick="moveItem('${type}', ${index}, 1)" title="下移">⬇</button>
+                            <label class="switch">
+                                <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleItem('${type}', ${index}, this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                            <button class="btn-small" style="background:#5c3a3a; border-color:#8a4a4a;" onclick="deleteItem('${type}', ${index})">🗑</button>
+                        </div>
+                    </div>
+                    ${isLore ? `
+                        <div style="display:flex; gap:6px; align-items:center; font-size:12px; color:#a9c6dc;">
+                            <span>触发关键词：</span>
+                            <input type="text" value="${escapeHtml(item.trigger || '')}" style="flex:1; background:#0d1318; border:1px solid #3a4f5e; color:#fff; padding:2px 6px; border-radius:3px;" onchange="updateItemTrigger(${index}, this.value)">
+                        </div>
+                    ` : ''}
+                    <textarea class="card-edit-area" rows="2" onchange="updateItemContent('${type}', ${index}, this.value)">${escapeHtml(item.content)}</textarea>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function toggleItem(type, index, isChecked) {
+        const list = type === 'preset' ? presetList : lorebookList;
+        if (list && list[index]) {
+            list[index].enabled = isChecked;
+            localStorage.setItem(type === 'preset' ? 'sd_preset_list' : 'sd_lorebook_list', JSON.stringify(list));
+            renderPromptList(type);
+        }
+    }
+
+    function moveItem(type, index, direction) {
+        const list = type === 'preset' ? presetList : lorebookList;
+        if (!list) return;
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= list.length) return;
+        [list[index], list[newIndex]] = [list[newIndex], list[index]];
+        localStorage.setItem(type === 'preset' ? 'sd_preset_list' : 'sd_lorebook_list', JSON.stringify(list));
+        renderPromptList(type);
+    }
+
+    function updateItemContent(type, index, newVal) {
+        const list = type === 'preset' ? presetList : lorebookList;
+        if (list && list[index]) {
+            list[index].content = newVal;
+            localStorage.setItem(type === 'preset' ? 'sd_preset_list' : 'sd_lorebook_list', JSON.stringify(list));
+        }
+    }
+
+    function updateItemTrigger(index, newVal) {
+        if (lorebookList && lorebookList[index]) {
+            lorebookList[index].trigger = newVal;
+            localStorage.setItem('sd_lorebook_list', JSON.stringify(lorebookList));
+        }
+    }
+
+    function addNewPromptItem(type) {
+        const list = type === 'preset' ? presetList : lorebookList;
+        const newItem = {
+            id: Date.now().toString(36) + Math.random().toString(36).substr(2, 4),
+            name: '新条目',
+            tag: '自定义',
+            content: '请输入预设内容……',
+            enabled: true
+        };
+        if (type === 'lorebook') {
+            newItem.trigger = '关键词';
+        }
+        list.push(newItem);
+        localStorage.setItem(type === 'preset' ? 'sd_preset_list' : 'sd_lorebook_list', JSON.stringify(list));
+        renderPromptList(type);
+    }
+
+    function deleteItem(type, index) {
+        if (!confirm('确定要删除这条条目吗？')) return;
+        const list = type === 'preset' ? presetList : lorebookList;
+        list.splice(index, 1);
+        localStorage.setItem(type === 'preset' ? 'sd_preset_list' : 'sd_lorebook_list', JSON.stringify(list));
+        renderPromptList(type);
+    }
+
+    function resetDefaultItems(type) {
+        if (!confirm(`重置将丢失所有自定义${type === 'preset' ? '预设' : '世界书'}，确定吗？`)) return;
+        if (type === 'preset') {
+            presetList = [...defaultPresets];
+            localStorage.setItem('sd_preset_list', JSON.stringify(presetList));
+        } else {
+            lorebookList = [...defaultLorebooks];
+            localStorage.setItem('sd_lorebook_list', JSON.stringify(lorebookList));
+        }
+        renderPromptList(type);
+    }
+
+    // ========== 其余原有函数（未改动） ==========
     function switchTab(tabId, element) {
         document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -407,28 +706,128 @@
         toggleSettings(false);
     }
 
-    /* 大模型剧情请求与沙盒控制内核省略... */
-    async function sendMessage() { /* 维持原大模型逻辑 */ }
-    
-    function awaken江湖() {
-        const audio = document.getElementById('bgMusic');
-        audio.play().then(() => { 
-            isMusicPlaying = true; 
-            document.getElementById('musicBtn').innerText = "🔊 正在播放"; 
-        }).catch(e => { console.log("音频播放因系统受阻"); });
-        document.getElementById('introOverlay').style.display = 'none';
-        document.getElementById('startScreen').style.display = 'block';
+    // ================= 核心对话功能 =================
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const userText = input.value.trim();
+        if (!userText) return;
+        input.value = '';
+
+        const userHtml = `<p class="user-msg"><strong>你：</strong>${escapeHtml(userText)}</p>`;
+        document.getElementById('chatBox').innerHTML += userHtml;
+        chatHistory.push(userHtml);
+        document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+
+        conversation.push({ role: 'user', content: userText });
+
+        const oldLoading = document.getElementById('loadingIndicator');
+        if (oldLoading) oldLoading.remove();
+        const loadingHtml = `<p id="loadingIndicator" class="sys-msg">⏳ 正在生成回复...</p>`;
+        document.getElementById('chatBox').innerHTML += loadingHtml;
+        document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+
+        const systemPrompt = buildSystemPrompt(userText);
+
+        const apiUrl = document.getElementById('apiUrlInput').value.trim();
+        const apiKey = document.getElementById('apiKeyInput').value.trim();
+        const model = document.getElementById('modelSelect').value;
+
+        if (!apiUrl || !apiKey || !model) {
+            const mockReply = "（未配置 API，系统启用本地沙盒）\n你说了：“" + userText + "”，但江湖风云未动，请先在天机阁配置好接口。";
+            const aiHtml = `<p class="ai-msg"><strong>系统：</strong>${escapeHtml(mockReply)}</p>`;
+            const loading = document.getElementById('loadingIndicator');
+            if (loading) loading.remove();
+            appendAIResponse(aiHtml, mockReply);
+            return;
+        }
+
+        const messages = [
+            { role: 'system', content: systemPrompt },
+            ...conversation
+        ];
+
+        try {
+            const baseUrl = apiUrl.replace(/\/+$/, '');
+            const response = await fetch(`${baseUrl}/chat/completions`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 800,
+                    stream: false
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            if (data.choices && data.choices.length > 0) {
+                const aiContent = data.choices[0].message.content;
+                const aiHtml = `<p class="ai-msg"><strong>AI：</strong>${escapeHtml(aiContent)}</p>`;
+                const loading = document.getElementById('loadingIndicator');
+                if (loading) loading.remove();
+                appendAIResponse(aiHtml, aiContent);
+            } else {
+                throw new Error('API 返回数据格式错误');
+            }
+        } catch (error) {
+            console.error('对话错误:', error);
+            const errMsg = `❌ 调用接口失败：${error.message}`;
+            const errHtml = `<p class="sys-msg">${escapeHtml(errMsg)}</p>`;
+            const loading = document.getElementById('loadingIndicator');
+            if (loading) loading.remove();
+            document.getElementById('chatBox').innerHTML += errHtml;
+            chatHistory.push(errHtml);
+            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+        }
     }
-    
-    function toggleMusic() {
-        const audio = document.getElementById('bgMusic');
-        if (!isMusicPlaying) { audio.play().then(() => { isMusicPlaying = true; document.getElementById('musicBtn').innerText = "🔊 正在播放"; }); } 
-        else { audio.pause(); isMusicPlaying = false; document.getElementById('musicBtn').innerText = "🔇 开启乐声"; }
+
+    function buildSystemPrompt(userInput) {
+        let parts = [];
+        presetList.forEach(item => {
+            if (item.enabled && item.content) {
+                parts.push(item.content);
+            }
+        });
+        lorebookList.forEach(item => {
+            if (item.enabled && item.trigger && item.content) {
+                if (userInput.includes(item.trigger)) {
+                    parts.push(item.content);
+                }
+            }
+        });
+        if (parts.length === 0) {
+            parts.push("你是一个武侠世界叙事助手，请沉浸式地继续故事。");
+        }
+        return parts.join('\n\n');
     }
-    
-    function adjustVolume(value) { document.getElementById('bgMusic').volume = value / 100; document.getElementById('volumeVal').innerText = value + "%"; }
-    
-    // ===== 存档控制流（只能有一个存档，新建即覆盖） =====
+
+    function appendAIResponse(html, rawContent) {
+        const loading = document.getElementById('loadingIndicator');
+        if (loading) loading.remove();
+
+        document.getElementById('chatBox').innerHTML += html;
+        chatHistory.push(html);
+        document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+
+        conversation.push({ role: 'assistant', content: rawContent });
+        saveGame();
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ===== 存档控制流 =====
     function startNewGame() {
         document.getElementById('startScreen').style.display = 'none';
         document.getElementById('saveSelectionScreen').style.display = 'flex';
@@ -468,10 +867,10 @@
     }
 
     function createNewCharacter() {
-        // 重置玩家角色状态及全局重置设定
         player = { hp: 100, mp: 50, exp: 0, inventory: ["初学木剑 x1"] };
         chatHistory = [];
         systemMemory = [];
+        conversation = [];
         playerProfile = { name: "", gender: "男", age: 16, difficulty: "普通", origin: "武林世家", traits: "骨骼清奇" };
         wizardStep = 0;
         
@@ -484,6 +883,12 @@
         player = JSON.parse(localStorage.getItem('sd_player_save')); 
         chatHistory = JSON.parse(localStorage.getItem('sd_chat_save'))||[]; 
         systemMemory = JSON.parse(localStorage.getItem('sd_memory_save'))||[]; 
+        const savedConv = localStorage.getItem('sd_conversation');
+        if (savedConv) {
+            try { conversation = JSON.parse(savedConv); } catch(e) { conversation = []; }
+        } else {
+            conversation = [];
+        }
         enterGameInterface(); 
     }
     
@@ -505,6 +910,7 @@
         localStorage.setItem('sd_player_save', JSON.stringify(player)); 
         localStorage.setItem('sd_chat_save', JSON.stringify(chatHistory)); 
         localStorage.setItem('sd_memory_save', JSON.stringify(systemMemory)); 
+        localStorage.setItem('sd_conversation', JSON.stringify(conversation)); 
         document.getElementById('btnContinue').disabled = false; 
     }
     
@@ -517,58 +923,86 @@
         document.getElementById('startScreen').style.display = 'block'; 
     }
     
+    // ===== 获取模型（原样保留） =====
     async function fetchAvailableModels() {
-    const apiUrl = document.getElementById('apiUrlInput').value.trim();
-    const apiKey = document.getElementById('apiKeyInput').value.trim();
-    const modelSelect = document.getElementById('modelSelect');
+        console.log('fetchAvailableModels 被调用');
+        const apiUrlInput = document.getElementById('apiUrlInput');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const modelSelect = document.getElementById('modelSelect');
 
-    if (!apiUrl || !apiKey) {
-        alert("请先在【接口天眼】中填入完整的 API 地址和 Key！");
-        return;
-    }
-
-    modelSelect.innerHTML = "<option>正在向江湖寻觅模型...</option>";
-
-    try {
-        // 自动处理结尾斜杠，防止路径错误
-        const baseUrl = apiUrl.replace(/\/$/, '');
-        
-        const response = await fetch(`${baseUrl}/models`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`网络响应异常: ${response.status}`);
+        if (!apiUrlInput || !apiKeyInput || !modelSelect) {
+            alert('界面元素未找到，请刷新页面重试。');
+            return;
         }
 
-        const result = await response.json();
-        const models = result.data; // 大多数兼容 OpenAI 的接口返回格式为 { data: [...] }
+        const apiUrl = apiUrlInput.value.trim();
+        const apiKey = apiKeyInput.value.trim();
 
-        if (models && Array.isArray(models) && models.length > 0) {
-            modelSelect.innerHTML = ""; // 清空加载提示
-            models.forEach(model => {
-                const option = document.createElement('option');
-                option.value = model.id;
-                option.text = model.id;
-                modelSelect.appendChild(option);
+        if (!apiUrl || !apiKey) {
+            alert("请先在【接口天眼】中填入完整的 API 地址和 Key！");
+            return;
+        }
+
+        modelSelect.innerHTML = "<option>正在向江湖寻觅模型...</option>";
+
+        try {
+            const baseUrl = apiUrl.replace(/\/+$/, '');
+            const modelsUrl = `${baseUrl}/models`;
+
+            const response = await fetch(modelsUrl, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                }
             });
-            alert(`成功！已为你寻得 ${models.length} 个可用模型。`);
-        } else {
-            modelSelect.innerHTML = "<option>未找到可用模型</option>";
-            alert("获取成功，但未解析到模型列表，请检查 API 服务配置。");
-        }
-    } catch (error) {
-        console.error("模型获取错误:", error);
-        modelSelect.innerHTML = "<option>获取失败</option>";
-        alert("无法连接到接口，请检查：\n1. API 地址是否正确（应包含 /v1）\n2. API Key 是否有效\n3. 是否存在跨域(CORS)拦截");
-    }
-}
 
-    // ===== 全新居中排版的创角步骤机制 =====
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log('API 返回结果:', result);
+
+            let models = [];
+            if (Array.isArray(result)) {
+                models = result;
+            } else if (result.data && Array.isArray(result.data)) {
+                models = result.data;
+            } else if (result.models && Array.isArray(result.models)) {
+                models = result.models;
+            } else if (result.list && Array.isArray(result.list)) {
+                models = result.list;
+            } else {
+                for (let key in result) {
+                    if (Array.isArray(result[key]) && result[key].length > 0 && result[key][0].id) {
+                        models = result[key];
+                        break;
+                    }
+                }
+            }
+
+            if (models && models.length > 0) {
+                modelSelect.innerHTML = "";
+                models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.id || model.name || model.model || 'unknown';
+                    option.text = model.id || model.name || model.model || '未知模型';
+                    modelSelect.appendChild(option);
+                });
+                alert(`✅ 成功获取 ${models.length} 个模型！`);
+            } else {
+                modelSelect.innerHTML = "<option>未找到可用模型</option>";
+                alert("获取成功，但未解析到模型列表，请检查 API 服务配置或尝试其他接口。");
+            }
+        } catch (error) {
+            console.error('模型获取错误:', error);
+            modelSelect.innerHTML = "<option>获取失败</option>";
+            alert("❌ 无法连接到接口，请检查：\n1. API 地址是否正确（例如：https://api.deepseek.com/v1）\n2. API Key 是否有效\n3. 网络或跨域(CORS)问题");
+        }
+    }
+
+    // ===== 创角向导 =====
     function renderWizard(){
         const c=document.getElementById("wizardContent");
         const t=document.getElementById("wizardTitle");
@@ -591,7 +1025,6 @@
                         <span style="font-family:'楷体', 'STKaiti', serif; font-size:24px; font-weight:bold;">姓 名</span>
                         <input id="nameInput" class="form-input" value="${playerProfile.name}">
                     </div>
-                    <!-- 性别改为自由文本输入框 -->
                     <div class="form-row">
                         <span style="font-family:'楷体', 'STKaiti', serif; font-size:24px; font-weight:bold;">性 别</span>
                         <input id="genderInput" class="form-input" value="${playerProfile.gender}">
@@ -681,7 +1114,6 @@
         else{
             saveProfile();
             
-            // 根据不同的难度设定初始气血/属性（模拟数值变化）
             const diffHP = { '极简': 150, '简单': 100, '普通': 50, '困难': 20, '极难': 10 };
             if (playerProfile.difficulty && diffHP[playerProfile.difficulty]) {
                 player.hp = diffHP[playerProfile.difficulty];
@@ -697,16 +1129,14 @@
             }
 
             chatHistory = [`<p class='ai-msg'><strong>【1237年·七月初二】</strong><br>武林散修【${playerProfile.name || "无名少年"}】开启了他的专属神雕绘卷。</p>`];
+            conversation = [];
             enterGameInterface();
-            
-            // 保存覆盖唯一档
             saveGame();
         }
     }
 
     function wizardPrev(){
         if(wizardStep === 0){
-            // 退回存档选择大厅
             document.getElementById('lifeWizard').style.display = 'none';
             document.getElementById('saveSelectionScreen').style.display = 'flex';
             renderSaveList();
@@ -717,6 +1147,25 @@
             renderWizard();
         }
     }
+
+    // 音乐控制
+    function awaken江湖() {
+        const audio = document.getElementById('bgMusic');
+        audio.play().then(() => { 
+            isMusicPlaying = true; 
+            document.getElementById('musicBtn').innerText = "🔊 正在播放"; 
+        }).catch(e => { console.log("音频播放因系统受阻"); });
+        document.getElementById('introOverlay').style.display = 'none';
+        document.getElementById('startScreen').style.display = 'block';
+    }
+    
+    function toggleMusic() {
+        const audio = document.getElementById('bgMusic');
+        if (!isMusicPlaying) { audio.play().then(() => { isMusicPlaying = true; document.getElementById('musicBtn').innerText = "🔊 正在播放"; }); } 
+        else { audio.pause(); isMusicPlaying = false; document.getElementById('musicBtn').innerText = "🔇 开启乐声"; }
+    }
+    
+    function adjustVolume(value) { document.getElementById('bgMusic').volume = value / 100; document.getElementById('volumeVal').innerText = value + "%"; }
 </script>
 </body>
 </html>
