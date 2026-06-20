@@ -907,16 +907,18 @@
         <div class="modal-content" style="width:min(500px,96%);">
             <h3 style="margin-bottom:15px; letter-spacing:2px;">【 更新日志 】</h3>
             <div style="text-align:left; color:#a9c6dc; line-height:1.8; font-size:14px; background:#0a1014; padding:15px; border-radius:5px; border:1px solid #283945;">
-                <p style="margin-top:0; font-weight:bold; color:#fff;">v1.2.0 动态生成反馈 & 纯文字输出</p>
+                <p style="margin-top:0; font-weight:bold; color:#fff;">v1.3.0 字数精确控制 & UI统一</p>
+                <ul style="margin:0; padding-left:20px;">
+                    <li>回复字数改为严格按中文字符计数，标点、数字、英文不计入</li>
+                    <li>动态调整 max_tokens 以匹配用户设置的字数目标</li>
+                    <li>创角界面「年龄」输入框样式与「姓名」「性别」完全统一</li>
+                </ul>
+                <hr style="border-color:#283945; margin:12px 0;">
+                <p style="font-weight:bold; color:#fff;">v1.2.0 动态生成反馈 & 纯文字输出</p>
                 <ul style="margin:0; padding-left:20px;">
                     <li>流式输出时显示动态“正文正在生成中...”提示，带呼吸动画</li>
                     <li>正文规则改为纯文字模式，不再输出任何HTML标签</li>
                     <li>状态栏和语义协议调整为纯文本描述，无代码包裹</li>
-                </ul>
-                <hr style="border-color:#283945; margin:12px 0;">
-                <p style="font-weight:bold; color:#fff;">v1.1.0 重构正文规则</p>
-                <ul style="margin:0; padding-left:20px;">
-                    <li>将正文规则拆分为“状态栏协议”与“灵动正文语义协议”两个独立模块</li>
                 </ul>
             </div>
             <div style="display:flex; justify-content:center; margin-top:25px;">
@@ -951,7 +953,7 @@
                 <div class="setting-item" style="margin-top:20px; border-top:1px solid #283945; padding-top:20px;">
                     <label for="replyLengthInput">📝 回复字数目标（100 ~ 20000）</label>
                     <input type="number" id="replyLengthInput" min="100" max="20000" value="2000" style="width:160px; background:#0d1318; color:#ddd; border:1px solid #283945; border-radius:4px; padding:8px; font-size:16px;">
-                    <span style="margin-left:10px; color:#7fa1b8;">字</span>
+                    <span style="margin-left:10px; color:#7fa1b8;">字（仅计汉字）</span>
                 </div>
                 <div class="setting-item" style="margin-top:15px;">
                     <label class="checkbox-label">
@@ -2063,9 +2065,10 @@
                             <span style="font-family:'楷体','STKaiti',serif; font-size:22px; font-weight:bold;">性 别</span>
                             <input id="genderInput" class="form-input" value="${escapeHtml(playerProfile.gender)}">
                         </div>
+                        <!-- ===== 修改：年龄输入框与姓名、性别样式完全统一 ===== -->
                         <div class="form-row">
                             <span style="font-family:'楷体','STKaiti',serif; font-size:22px; font-weight:bold;">年 龄</span>
-                            <input id="ageInput" class="form-input" type="number" value="${playerProfile.age || 16}">
+                            <input id="ageInput" class="form-input" value="${playerProfile.age || 16}" inputmode="numeric" pattern="[0-9]*">
                         </div>
                     </div>
                 `;
@@ -2201,11 +2204,13 @@
                 const val = parseInt(lengthInput.value);
                 if (!isNaN(val) && val >= 100 && val <= 20000) length = val;
             }
-            parts.push(`请控制回复字数在 ${length} 字左右。`);
+
+            // ===== 修改：强化字数控制，严格按中文字符计数 =====
+            parts.push(`【字数强制要求】你的回复必须严格包含 ${length} 个中文字符（仅计Unicode汉字）。标点符号、数字、英文单词、空格均不计入字数。请精确控制字数，不要多也不要少。`);
 
             if (parts.length === 0) {
                 parts.push("你是一个武侠世界叙事助手，请沉浸式地继续故事。");
-                parts.push(`请控制回复字数在 ${length} 字左右。`);
+                parts.push(`【字数强制要求】你的回复必须严格包含 ${length} 个中文字符（仅计Unicode汉字）。标点符号、数字、英文单词、空格均不计入字数。`);
             }
             return parts.join('\n\n');
         }
@@ -2270,6 +2275,16 @@
                 const baseUrl = apiUrl.replace(/\/+$/, '');
                 const useStream = streamEnabled;
 
+                // ===== 修改：根据用户设置的字数动态计算 max_tokens =====
+                const lengthInput2 = getEl('replyLengthInput');
+                let targetLength = 2000;
+                if (lengthInput2) {
+                    const val = parseInt(lengthInput2.value);
+                    if (!isNaN(val) && val >= 100 && val <= 20000) targetLength = val;
+                }
+                // 每个汉字约 2~3 个 token，加上 500 的余量，同时限制在模型最大上下文内（8192）
+                const maxTokens = Math.min(Math.floor(targetLength * 2.5 + 500), 8192);
+
                 const response = await fetch(`${baseUrl}/chat/completions`, {
                     method: 'POST',
                     headers: {
@@ -2281,7 +2296,7 @@
                         model: model,
                         messages: messages,
                         temperature: 0.7,
-                        max_tokens: 4000,
+                        max_tokens: maxTokens,
                         stream: useStream
                     })
                 });
@@ -2433,7 +2448,7 @@
         // ============================================================
         //  控制台提示
         // ============================================================
-        console.log('🐉 神雕侠侣 · 武侠绘卷 已加载 (v1.2.0) — 动态生成反馈 + 纯文字输出');
+        console.log('🐉 神雕侠侣 · 武侠绘卷 已加载 (v1.3.0) — 字数精确控制 + UI统一');
     </script>
 
 </body>
