@@ -28,6 +28,7 @@
             --panel-shadow: rgba(74, 144, 217, 0.08);
             --hp-color: #e74c3c;
             --mp-color: #3498db;
+            --player-badge: #f1c40f;
         }
 
         /* 冷色调（蓝黑） */
@@ -48,6 +49,7 @@
             --panel-shadow: rgba(0, 0, 0, 0.3);
             --hp-color: #e74c3c;
             --mp-color: #3498db;
+            --player-badge: #f1c40f;
         }
 
         body {
@@ -57,7 +59,7 @@
             padding: 0;
             margin: 0;
             overflow-x: hidden;
-            transition: background 0.3s, color 0.3s;
+            transition: background 0.3s, color 0.3s, filter 0.3s ease;
         }
 
         /* ===== 欢迎大厅 ===== */
@@ -588,11 +590,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.45);
             z-index: 100;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
+            backdrop-filter: blur(2px);
         }
         .modal-overlay.active {
             display: flex;
@@ -600,32 +603,47 @@
         .modal-content {
             background: var(--bg-card);
             border: 2px solid var(--border-color);
-            padding: 25px;
+            padding: 20px 24px;
             border-radius: 16px;
             width: min(650px, 96%);
-            max-height: 90vh;
+            max-height: 88vh;
             overflow-y: auto;
             text-align: center;
             box-sizing: border-box;
             box-shadow: 0 8px 48px var(--shadow-color);
+            margin: auto;
+            position: relative;
+        }
+        .modal-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--input-bg);
+            border-radius: 4px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
         }
 
-        /* ===== 设置界面 — 居中窄版 ===== */
+        /* ===== 设置界面 — 完美居中 + 完整滚动 ===== */
         #settingsModal .modal-content {
-            width: min(780px, 92%);
-            max-width: 780px;
-            max-height: 92vh;
+            width: min(820px, 94%);
+            max-width: 820px;
+            max-height: 86vh;
             border-radius: 20px;
-            padding: 24px 28px;
-            margin: 0 auto;
+            padding: 18px 22px 22px 22px;
+            margin: auto;
             border: 2px solid var(--border-color);
             box-shadow: 0 12px 56px var(--shadow-color);
             background: var(--bg-card);
             font-size: 15px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         #settingsModal .modal-content h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
+            font-size: 22px;
+            margin-bottom: 12px;
             color: var(--text-primary);
             letter-spacing: 2px;
         }
@@ -633,22 +651,27 @@
             display: flex;
             gap: 4px;
             border-bottom: 2px solid var(--border-light);
-            margin-bottom: 15px;
-            padding-bottom: 5px;
+            margin-bottom: 12px;
+            padding-bottom: 4px;
             flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            z-index: 5;
         }
         .tab-btn {
             flex: 1 1 auto;
-            padding: 10px 14px;
+            padding: 8px 12px;
             background: #f0f6fc;
             color: #3a6a8a;
             border: 1px solid var(--border-light);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             border-radius: 8px 8px 0 0;
             font-family: inherit;
             transition: 0.3s;
-            min-width: 80px;
+            min-width: 64px;
+            text-align: center;
         }
         .theme-cool .tab-btn {
             background: #1a2a34;
@@ -672,20 +695,21 @@
         .tab-panel {
             display: none;
             text-align: left;
+            padding-top: 8px;
         }
         .tab-panel.active {
             display: block;
         }
         .setting-item {
-            margin-bottom: 18px;
+            margin-bottom: 14px;
             text-align: left;
         }
         .setting-item label {
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-primary);
             font-weight: bold;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .setting-item label.checkbox-label {
             display: flex;
@@ -699,7 +723,7 @@
             align-items: center;
             gap: 10px;
             background: var(--input-bg);
-            padding: 8px 12px;
+            padding: 6px 12px;
             border-radius: 8px;
             border: 1px solid var(--input-border);
         }
@@ -712,14 +736,14 @@
         input[type="text"],
         input[type="password"],
         input[type="number"] {
-            padding: 10px 14px;
+            padding: 8px 12px;
             background: var(--input-bg);
             color: var(--text-primary);
             border: 2px solid var(--input-border);
             border-radius: 8px;
             width: 100%;
             box-sizing: border-box;
-            font-size: 15px;
+            font-size: 14px;
             font-family: inherit;
             transition: 0.3s;
         }
@@ -727,23 +751,23 @@
         input:focus {
             outline: none;
             border-color: var(--btn-bg);
-            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.12);
         }
 
         .item-manager-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
         .btn-small {
             background: #e8f0f8;
             border: 1px solid var(--border-color);
             color: var(--text-primary);
-            padding: 5px 14px;
-            font-size: 13px;
+            padding: 4px 12px;
+            font-size: 12px;
             border-radius: 6px;
             cursor: pointer;
             font-family: inherit;
@@ -768,8 +792,8 @@
             background: #e0ecf6;
             border: 1px solid var(--border-color);
             color: var(--text-primary);
-            padding: 5px 14px;
-            font-size: 13px;
+            padding: 4px 12px;
+            font-size: 12px;
             border-radius: 6px;
             cursor: pointer;
             display: inline-block;
@@ -793,13 +817,20 @@
         .item-list-container {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 320px;
+            gap: 6px;
+            max-height: 160px;
             overflow-y: auto;
             background: var(--input-bg);
-            padding: 8px;
+            padding: 6px 8px;
             border: 1px solid var(--input-border);
             border-radius: 8px;
+        }
+        .item-list-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .item-list-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
         }
 
         /* ===== 预设/世界书卡片 ===== */
@@ -807,12 +838,13 @@
             background: var(--bg-card);
             border: 2px solid var(--border-light);
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 8px 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             transition: 0.3s;
             box-shadow: 0 1px 4px var(--shadow-color);
+            flex-shrink: 0;
         }
         .prompt-item-card:hover {
             border-color: var(--border-color);
@@ -827,22 +859,22 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 4px;
         }
         .card-meta {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 14px;
+            gap: 4px;
+            font-size: 13px;
             font-weight: bold;
             color: var(--text-primary);
             flex-wrap: wrap;
         }
         .card-tag {
-            font-size: 11px;
+            font-size: 10px;
             background: #e4eef8;
             color: #2a5a7a;
-            padding: 2px 8px;
+            padding: 1px 8px;
             border-radius: 12px;
             max-width: 120px;
             overflow: hidden;
@@ -856,7 +888,7 @@
         .card-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
             flex-wrap: wrap;
         }
         .arrow-btn {
@@ -864,8 +896,8 @@
             border: none;
             color: #4a7a9a;
             cursor: pointer;
-            font-size: 15px;
-            padding: 0 4px;
+            font-size: 14px;
+            padding: 0 2px;
             line-height: 1;
             font-family: inherit;
             transition: 0.2s;
@@ -880,8 +912,8 @@
         .switch {
             position: relative;
             display: inline-block;
-            width: 34px;
-            height: 18px;
+            width: 30px;
+            height: 16px;
             flex-shrink: 0;
         }
         .switch input {
@@ -898,7 +930,7 @@
             bottom: 0;
             background-color: #d0dce8;
             transition: .3s;
-            border-radius: 18px;
+            border-radius: 16px;
         }
         .theme-cool .slider {
             background-color: #3a4a5a;
@@ -906,8 +938,8 @@
         .slider:before {
             position: absolute;
             content: "";
-            height: 12px;
-            width: 12px;
+            height: 10px;
+            width: 10px;
             left: 3px;
             bottom: 3px;
             background-color: white;
@@ -918,21 +950,21 @@
             background-color: var(--btn-bg);
         }
         input:checked+.slider:before {
-            transform: translateX(16px);
+            transform: translateX(14px);
         }
 
         .card-content-display {
             background: var(--card-display-bg);
             border: 1px solid var(--border-light);
             border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 13px;
+            padding: 6px 10px;
+            font-size: 12px;
             color: var(--text-primary);
             white-space: pre-wrap;
             word-break: break-word;
-            max-height: 120px;
+            max-height: 80px;
             overflow-y: auto;
-            line-height: 1.6;
+            line-height: 1.5;
             font-family: "Microsoft YaHei", sans-serif;
             cursor: default;
             transition: 0.3s;
@@ -948,39 +980,39 @@
             color: var(--text-primary);
             border: 2px solid var(--btn-bg);
             border-radius: 6px;
-            padding: 8px 12px;
+            padding: 6px 10px;
             box-sizing: border-box;
-            font-size: 13px;
+            font-size: 12px;
             resize: vertical;
             font-family: "Consolas", "Monaco", monospace;
-            min-height: 60px;
+            min-height: 40px;
         }
         .card-edit-area:focus {
             outline: none;
             border-color: var(--btn-hover);
-            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.12);
         }
 
         /* ===== 正文规则面板 ===== */
         #tab-body-rules .setting-item textarea {
             font-family: "Microsoft YaHei", sans-serif;
             resize: vertical;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         /* ===== 编辑模态框 ===== */
         #editPromptModal .modal-content {
             width: min(700px, 96%);
-            max-height: 90vh;
+            max-height: 88vh;
         }
         #editPromptModal .setting-item input,
         #editPromptModal .setting-item textarea {
-            font-size: 15px;
+            font-size: 14px;
             background: var(--input-bg);
             color: var(--text-primary);
             border: 2px solid var(--input-border);
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 8px 12px;
             box-sizing: border-box;
             width: 100%;
             font-family: inherit;
@@ -1166,6 +1198,78 @@
             color: var(--highlight);
         }
 
+        /* ===== 角色列表样式 ===== */
+        .character-list {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .character-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px;
+            background: var(--input-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .character-item:hover {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+        }
+        .character-item .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--btn-bg);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+        .character-item .avatar.player-avatar {
+            background: var(--player-badge);
+            color: #1a2a3a;
+            border: 2px solid var(--btn-bg);
+        }
+        .character-item .info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .character-item .info .name {
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        .character-item .info .sub {
+            font-size: 11px;
+            color: #4a7a9a;
+        }
+        .theme-cool .character-item .info .sub {
+            color: #7a9aaa;
+        }
+        .character-item .badge {
+            font-size: 10px;
+            background: var(--btn-bg);
+            color: #fff;
+            padding: 1px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .character-item .badge.player-badge {
+            background: var(--player-badge);
+            color: #1a2a3a;
+        }
+
         .chat-box {
             flex: 1;
             min-height: 0;
@@ -1281,69 +1385,141 @@
             transform: none;
         }
 
-        #inventory {
-            padding-left: 18px;
-            font-size: 14px;
-            margin: 0;
-            color: var(--text-primary);
-        }
-        #inventory li {
-            margin-bottom: 4px;
-        }
-
         /* ===== 响应式微调 ===== */
-        @media (max-width: 480px) {
+        @media (max-width: 600px) {
             .creation-panel {
-                padding: 20px;
+                padding: 16px;
             }
             .story-text {
-                font-size: 17px;
+                font-size: 16px;
             }
             .form-row-center {
-                gap: 12px;
+                gap: 10px;
             }
             .form-group {
-                min-width: 70px;
+                min-width: 60px;
             }
             .form-input {
-                width: 90px;
-                font-size: 14px;
+                width: 80px;
+                font-size: 13px;
             }
             .btn-img-style {
                 font-size: 15px;
                 padding: 8px 12px;
             }
             .modal-content {
-                padding: 16px;
+                padding: 14px 16px;
             }
             #settingsModal .modal-content {
-                padding: 16px 14px;
+                padding: 12px 14px 16px 14px;
                 width: 96%;
+                max-height: 82vh;
             }
             .tab-btn {
-                font-size: 12px;
-                padding: 8px 10px;
+                font-size: 11px;
+                padding: 6px 8px;
+                min-width: 48px;
             }
             .card-meta {
-                font-size: 12px;
+                font-size: 11px;
             }
             .diff-option {
-                min-width: 70px;
-                padding: 10px 14px;
+                min-width: 60px;
+                padding: 8px 12px;
             }
             .attr-row {
                 flex-wrap: wrap;
-                gap: 6px;
-                padding: 8px 12px;
+                gap: 4px;
+                padding: 6px 10px;
             }
             .attr-row .attr-name {
-                min-width: 40px;
-                font-size: 14px;
+                min-width: 34px;
+                font-size: 13px;
             }
             .player-info {
                 flex-direction: column;
                 gap: 4px;
             }
+            .settings-tabs {
+                gap: 2px;
+            }
+            .item-list-container {
+                max-height: 120px;
+            }
+            #settingsModal .modal-content h3 {
+                font-size: 18px;
+            }
+            .character-item .avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+            .character-item .info .name {
+                font-size: 12px;
+            }
+            .character-item .info .sub {
+                font-size: 10px;
+            }
+        }
+        @media (max-width: 400px) {
+            #settingsModal .modal-content {
+                padding: 10px 10px 14px 10px;
+                max-height: 78vh;
+            }
+            .setting-item label {
+                font-size: 12px;
+            }
+            .tab-btn {
+                font-size: 10px;
+                padding: 4px 6px;
+                min-width: 36px;
+            }
+        }
+
+        /* ===== 亮度调节专用样式 ===== */
+        .brightness-icon-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 18px;
+            user-select: none;
+        }
+        .brightness-icon-wrap span {
+            line-height: 1;
+        }
+        .brightness-hint {
+            font-size: 12px;
+            color: #4a7a9a;
+            margin-top: 4px;
+            padding-left: 4px;
+        }
+        .theme-cool .brightness-hint {
+            color: #6a9aaa;
+        }
+
+        /* ===== 角色详情模态框 ===== */
+        #charDetailModal .modal-content {
+            max-width: 420px;
+            text-align: left;
+        }
+        #charDetailModal .modal-content h3 {
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        #charDetailModal .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        #charDetailModal .detail-row .label {
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        #charDetailModal .detail-row .value {
+            color: var(--highlight);
         }
     </style>
 </head>
@@ -1388,21 +1564,19 @@
         <div class="modal-content" style="width:min(500px,96%);">
             <h3 style="margin-bottom:15px;letter-spacing:2px;color:var(--text-primary);">【 更新日志 】</h3>
             <div style="text-align:left;color:var(--text-primary);line-height:1.8;font-size:14px;background:var(--input-bg);padding:15px;border-radius:10px;border:2px solid var(--border-light);">
-                <p style="margin-top:0;font-weight:bold;color:var(--text-primary);">v1.6.0 存档管理增强 & 角色面板升级</p>
+                <p style="margin-top:0;font-weight:bold;color:var(--text-primary);">v1.8.0 正文分段 & NPC自动提取</p>
                 <ul style="margin:0;padding-left:20px;">
-                    <li>每个存档卡片增加【删除存档】按钮，方便管理</li>
-                    <li>始终保持【新建存档】入口，存档满时提示覆盖选择</li>
-                    <li>角色面板显示姓名、性别、年龄</li>
-                    <li>血量和内力以进度条（血条/蓝条）形式直观展示</li>
-                    <li>天赋加点直接影响初始气血和内力值</li>
+                    <li>正文协议优化：强制AI输出分段，每段不超过5行，段间空行，提升阅读体验</li>
+                    <li>左侧角色列表只显示主角和NPC名字，点击可查看详细属性（血量、法力、性别、年龄等）</li>
+                    <li>设置新增【NPC配置】模块，可手动添加/编辑/删除NPC，并配置其属性</li>
+                    <li>系统自动从AI回复中提取NPC名字（基于配置列表），并加入左侧角色列表</li>
+                    <li>移除了背包物品区域</li>
                 </ul>
                 <hr style="border-color:var(--border-light);margin:12px 0;">
-                <p style="font-weight:bold;color:var(--text-primary);">v1.5.0 三存档 & 天赋加点</p>
+                <p style="font-weight:bold;color:var(--text-primary);">v1.7.2 角色列表 & 设置居中优化</p>
                 <ul style="margin:0;padding-left:20px;">
-                    <li>存档扩展为三个独立槽位，可分别保存不同角色进度</li>
-                    <li>创角故事焕新，更具江湖沉浸感</li>
-                    <li>难度选择显示天赋点：极简9999、简单720、普通600、困难580、极难175</li>
-                    <li>新增天赋加点：血量、物攻、物防、特攻、特防、速度，每项上限120</li>
+                    <li>角色列表显示头像和名字，主角置顶</li>
+                    <li>设置面板完美居中，滚动流畅</li>
                 </ul>
             </div>
             <div style="display:flex;justify-content:center;margin-top:25px;">
@@ -1414,7 +1588,7 @@
     <!-- ===== 设置面板 ===== -->
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-bottom:15px;letter-spacing:2px;color:var(--text-primary);">【 系统天机阁 · 高级设置 】</h3>
+            <h3 style="margin-bottom:12px;letter-spacing:2px;color:var(--text-primary);">【 系统天机阁 · 高级设置 】</h3>
 
             <div class="settings-tabs">
                 <button class="tab-btn active" onclick="switchTab('tab-theme', this)">🎨 主题显示</button>
@@ -1422,6 +1596,7 @@
                 <button class="tab-btn" onclick="switchTab('tab-preset', this)">📜 剧情正文预设</button>
                 <button class="tab-btn" onclick="switchTab('tab-lorebook', this)">📖 模块化世界书</button>
                 <button class="tab-btn" onclick="switchTab('tab-body-rules', this)">📜 正文规则</button>
+                <button class="tab-btn" onclick="switchTab('tab-npc', this)">👥 NPC配置</button>
             </div>
 
             <!-- 主题显示 -->
@@ -1433,6 +1608,17 @@
                         <button class="btn-small" id="themeCoolBtn" onclick="setTheme('cool')" style="background:transparent;border-color:var(--border-color);">冷色调（蓝黑）</button>
                     </div>
                 </div>
+
+                <div class="setting-item" style="border-top:2px solid var(--border-light);padding-top:14px;margin-top:2px;">
+                    <label for="brightnessSlider">☀️ 页面亮度：<span id="brightnessVal">100%</span></label>
+                    <div class="volume-container">
+                        <span class="brightness-icon-wrap"><span>🌑</span></span>
+                        <input type="range" id="brightnessSlider" class="volume-slider" min="40" max="180" value="100" oninput="adjustBrightness(this.value)">
+                        <span class="brightness-icon-wrap"><span>☀️</span></span>
+                    </div>
+                    <div class="brightness-hint">调节整体页面明暗，40% ~ 180%</div>
+                </div>
+
                 <div class="setting-item">
                     <label for="volumeSlider">🎵 背景音乐音量：<span id="volumeVal">50%</span></label>
                     <div class="volume-container">
@@ -1441,16 +1627,16 @@
                         <span>🔊</span>
                     </div>
                 </div>
-                <div class="setting-item" style="margin-top:20px;border-top:2px solid var(--border-light);padding-top:20px;">
+                <div class="setting-item" style="margin-top:16px;border-top:2px solid var(--border-light);padding-top:16px;">
                     <label for="replyLengthInput">📝 回复字数目标（100 ~ 20000）</label>
-                    <input type="number" id="replyLengthInput" min="100" max="20000" value="2000" style="width:160px;background:var(--input-bg);color:var(--text-primary);border:2px solid var(--input-border);border-radius:8px;padding:8px 14px;font-size:16px;">
+                    <input type="number" id="replyLengthInput" min="100" max="20000" value="2000" style="width:160px;background:var(--input-bg);color:var(--text-primary);border:2px solid var(--input-border);border-radius:8px;padding:6px 12px;font-size:15px;">
                     <span style="margin-left:10px;color:#4a7a9a;">字（仅计汉字）</span>
                 </div>
-                <div class="setting-item" style="margin-top:15px;">
+                <div class="setting-item" style="margin-top:12px;">
                     <label class="checkbox-label">
                         <input type="checkbox" id="streamToggle" checked> 启用流式输出（边生成边显示）
                     </label>
-                    <div style="font-size:13px;color:#4a7a9a;margin-top:5px;">正文逐字显示，状态命令等完整返回后处理</div>
+                    <div style="font-size:13px;color:#4a7a9a;margin-top:4px;">正文逐字显示，状态命令等完整返回后处理</div>
                 </div>
             </div>
 
@@ -1465,7 +1651,7 @@
                     <input type="password" id="apiKeyInput" placeholder="输入你的 API Key (sk-xxxx，为空时自动启用本地沙盒)">
                 </div>
                 <div class="setting-item">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:4px;">
                         <label style="margin:0;">🤖 选择模型：</label>
                         <button class="btn-small" onclick="fetchAvailableModels()">获取模型</button>
                     </div>
@@ -1476,8 +1662,8 @@
             <!-- 预设 -->
             <div id="tab-preset" class="tab-panel">
                 <div class="item-manager-header">
-                    <span style="font-size:13px;color:#4a7a9a;">当前启用的条目将拼入 System Prompt</span>
-                    <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span style="font-size:12px;color:#4a7a9a;">当前启用的条目将拼入 System Prompt</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;">
                         <label class="btn-import-label" for="importPresetFile">📥 导入 JSON</label>
                         <input type="file" id="importPresetFile" accept=".json" style="display:none;" onchange="handleJsonImport(this, 'preset')">
                         <button class="btn-small" onclick="addNewPromptItem('preset')">+ 新增条目</button>
@@ -1490,8 +1676,8 @@
             <!-- 世界书 -->
             <div id="tab-lorebook" class="tab-panel">
                 <div class="item-manager-header">
-                    <span style="font-size:13px;color:#4a7a9a;">关键词触发式世界观规则设定</span>
-                    <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span style="font-size:12px;color:#4a7a9a;">关键词触发式世界观规则设定</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;">
                         <label class="btn-import-label" for="importLorebookFile">📥 导入 JSON</label>
                         <input type="file" id="importLorebookFile" accept=".json" style="display:none;" onchange="handleJsonImport(this, 'lorebook')">
                         <button class="btn-small" onclick="addNewPromptItem('lorebook')">+ 新增规则</button>
@@ -1503,63 +1689,78 @@
 
             <!-- 正文规则 -->
             <div id="tab-body-rules" class="tab-panel">
-                <div style="font-size:14px;color:var(--text-primary);margin-bottom:15px;padding:12px 16px;background:var(--input-bg);border-radius:10px;border:2px solid var(--border-light);">
+                <div style="font-size:13px;color:var(--text-primary);margin-bottom:12px;padding:10px 14px;background:var(--input-bg);border-radius:10px;border:2px solid var(--border-light);">
                     <p style="margin:0;line-height:1.6;">
                         📌 以下规则控制AI的叙事风格。当前设置为<b>纯文字模式</b>，AI不会输出任何HTML标签或语义标记。<br>
                         下方两个模块可分别启用/禁用。
                     </p>
                 </div>
 
-                <div class="setting-item" style="border:2px solid var(--border-light);border-radius:10px;padding:14px 16px;margin-bottom:20px;background:var(--input-bg);">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <label style="font-size:17px;font-weight:bold;color:var(--text-primary);">📌 正文开头状态栏协议</label>
+                <div class="setting-item" style="border:2px solid var(--border-light);border-radius:10px;padding:12px 14px;margin-bottom:16px;background:var(--input-bg);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <label style="font-size:16px;font-weight:bold;color:var(--text-primary);">📌 正文开头状态栏协议</label>
                         <label class="switch">
                             <input type="checkbox" id="statusBarToggle">
                             <span class="slider"></span>
                         </label>
                     </div>
-                    <div style="font-size:13px;color:#4a7a9a;margin-bottom:10px;">
+                    <div style="font-size:12px;color:#4a7a9a;margin-bottom:6px;">
                         约束每轮正文开头用纯文字交代时间、地点、天气。
                     </div>
-                    <label for="statusBarContent" style="font-size:14px;color:var(--text-primary);display:block;margin-bottom:4px;">协议内容：</label>
-                    <textarea id="statusBarContent" rows="6" style="width:100%;background:var(--bg-card);color:var(--text-primary);border:2px solid var(--input-border);border-radius:8px;padding:10px 14px;box-sizing:border-box;font-family:'Microsoft YaHei',sans-serif;resize:vertical;font-size:14px;"></textarea>
-                    <div style="font-size:12px;color:#4a7a9a;margin-top:4px;">
+                    <label for="statusBarContent" style="font-size:13px;color:var(--text-primary);display:block;margin-bottom:3px;">协议内容：</label>
+                    <textarea id="statusBarContent" rows="5" style="width:100%;background:var(--bg-card);color:var(--text-primary);border:2px solid var(--input-border);border-radius:8px;padding:8px 12px;box-sizing:border-box;font-family:'Microsoft YaHei',sans-serif;resize:vertical;font-size:13px;"></textarea>
+                    <div style="font-size:11px;color:#4a7a9a;margin-top:3px;">
                         可用变量：<code>${'${current_time}'}</code> <code>${'${current_location}'}</code> <code>${'${season}'}</code> <code>${'${weather}'}</code>
                     </div>
                 </div>
 
-                <div class="setting-item" style="border:2px solid var(--border-light);border-radius:10px;padding:14px 16px;margin-bottom:20px;background:var(--input-bg);">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <label style="font-size:17px;font-weight:bold;color:var(--text-primary);">✨ 叙事风格协议</label>
+                <div class="setting-item" style="border:2px solid var(--border-light);border-radius:10px;padding:12px 14px;margin-bottom:16px;background:var(--input-bg);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <label style="font-size:16px;font-weight:bold;color:var(--text-primary);">✨ 叙事风格协议</label>
                         <label class="switch">
                             <input type="checkbox" id="semanticToggle">
                             <span class="slider"></span>
                         </label>
                     </div>
-                    <div style="font-size:13px;color:#4a7a9a;margin-bottom:10px;">
+                    <div style="font-size:12px;color:#4a7a9a;margin-bottom:6px;">
                         约束正文的叙事风格、文笔节奏与氛围塑造（纯文字，无HTML）。
                     </div>
-                    <label for="semanticContent" style="font-size:14px;color:var(--text-primary);display:block;margin-bottom:4px;">协议内容：</label>
-                    <textarea id="semanticContent" rows="8" style="width:100%;background:var(--bg-card);color:var(--text-primary);border:2px solid var(--input-border);border-radius:8px;padding:10px 14px;box-sizing:border-box;font-family:'Microsoft YaHei',sans-serif;resize:vertical;font-size:14px;"></textarea>
+                    <label for="semanticContent" style="font-size:13px;color:var(--text-primary);display:block;margin-bottom:3px;">协议内容：</label>
+                    <textarea id="semanticContent" rows="6" style="width:100%;background:var(--bg-card);color:var(--text-primary);border:2px solid var(--input-border);border-radius:8px;padding:8px 12px;box-sizing:border-box;font-family:'Microsoft YaHei',sans-serif;resize:vertical;font-size:13px;"></textarea>
                 </div>
 
-                <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap;">
+                <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap;">
                     <button class="btn-small" onclick="resetBodyRules()" style="background:#e8eef4;">恢复默认</button>
                     <button class="btn-small" onclick="saveBodyRules()" style="background:var(--btn-bg);color:#fff;border-color:var(--btn-bg);">保存全部规则</button>
                 </div>
             </div>
 
-            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;padding-top:15px;border-top:2px solid var(--border-light);">
+            <!-- ===== NPC配置选项卡 ===== -->
+            <div id="tab-npc" class="tab-panel">
+                <div class="item-manager-header">
+                    <span style="font-size:12px;color:#4a7a9a;">配置NPC，系统将自动从正文中提取名字并加入角色列表</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                        <button class="btn-small" onclick="addNewNPC()">+ 新增NPC</button>
+                        <button class="btn-small" onclick="resetDefaultNPCs()">重置默认</button>
+                    </div>
+                </div>
+                <div id="npcConfigContainer" class="item-list-container" style="max-height:240px;"></div>
+                <div style="margin-top:10px;font-size:12px;color:#4a7a9a;">
+                    💡 当AI回复中出现NPC名字时，会自动加入左侧角色列表（如果尚未存在）。点击角色可查看详情。
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:2px solid var(--border-light);">
                 <button class="btn-action" style="background:var(--btn-bg);" onclick="saveSettings()">保存天机配置</button>
                 <button class="btn-action" style="background:#b0c8da;color:#1a2a3a;" onclick="toggleSettings(false)">关闭</button>
             </div>
         </div>
     </div>
 
-    <!-- ===== 编辑模态框 ===== -->
+    <!-- ===== 编辑模态框（用于预设/世界书） ===== -->
     <div id="editPromptModal" class="modal-overlay">
         <div class="modal-content">
-            <h3 id="editModalTitle" style="margin-bottom:15px;letter-spacing:2px;color:var(--text-primary);">✏️ 编辑条目</h3>
+            <h3 id="editModalTitle" style="margin-bottom:12px;letter-spacing:2px;color:var(--text-primary);">✏️ 编辑条目</h3>
             <div style="text-align:left;">
                 <div class="setting-item">
                     <label>📛 名称</label>
@@ -1575,12 +1776,65 @@
                 </div>
                 <div class="setting-item">
                     <label>📄 内容</label>
-                    <textarea id="editContent" rows="10"></textarea>
+                    <textarea id="editContent" rows="8"></textarea>
                 </div>
             </div>
-            <div style="display:flex;gap:15px;justify-content:center;margin-top:20px;flex-wrap:wrap;">
+            <div style="display:flex;gap:15px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
                 <button class="btn-action" style="background:var(--btn-bg);" onclick="saveEditModal()">💾 保存</button>
                 <button class="btn-action" style="background:#b0c8da;color:#1a2a3a;" onclick="closeEditModal()">❌ 取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NPC编辑模态框 ===== -->
+    <div id="editNPCModel" class="modal-overlay">
+        <div class="modal-content" style="max-width:500px;">
+            <h3 id="editNPCTitle" style="margin-bottom:12px;letter-spacing:2px;color:var(--text-primary);">✏️ 编辑NPC</h3>
+            <div style="text-align:left;">
+                <input type="hidden" id="editNPCId">
+                <div class="setting-item">
+                    <label>📛 名字 *</label>
+                    <input type="text" id="editNPCName" placeholder="如：小龙女">
+                </div>
+                <div class="setting-item">
+                    <label>🧑 性别</label>
+                    <input type="text" id="editNPCGender" placeholder="男/女">
+                </div>
+                <div class="setting-item">
+                    <label>🎂 年龄</label>
+                    <input type="number" id="editNPCAge" placeholder="18">
+                </div>
+                <div class="setting-item">
+                    <label>❤️ 气血 (HP)</label>
+                    <input type="number" id="editNPCHp" placeholder="100">
+                </div>
+                <div class="setting-item">
+                    <label>💧 内力 (MP)</label>
+                    <input type="number" id="editNPCMp" placeholder="50">
+                </div>
+                <div class="setting-item">
+                    <label>⚔️ 修为</label>
+                    <input type="text" id="editNPCExp" placeholder="炼气三层">
+                </div>
+                <div class="setting-item">
+                    <label>🏷️ 身份</label>
+                    <input type="text" id="editNPCTitle" placeholder="古墓派掌门">
+                </div>
+            </div>
+            <div style="display:flex;gap:15px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
+                <button class="btn-action" style="background:var(--btn-bg);" onclick="saveNPCFromModal()">💾 保存</button>
+                <button class="btn-action" style="background:#b0c8da;color:#1a2a3a;" onclick="closeNPCModal()">❌ 取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 角色详情模态框 ===== -->
+    <div id="charDetailModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="charDetailTitle">角色详情</h3>
+            <div id="charDetailBody"></div>
+            <div style="display:flex;justify-content:center;margin-top:16px;">
+                <button class="btn-action" style="background:#b0c8da;color:#1a2a3a;" onclick="closeCharDetail()">关闭</button>
             </div>
         </div>
     </div>
@@ -1595,13 +1849,11 @@
         <div class="game-container">
             <div class="panel">
                 <h3>【 角色状态 】</h3>
-                <!-- 玩家信息 -->
                 <div class="player-info" id="playerInfo">
                     <span class="info-item">姓名：<strong id="playerName">--</strong></span>
                     <span class="info-item">性别：<strong id="playerGender">--</strong></span>
                     <span class="info-item">年龄：<strong id="playerAge">--</strong></span>
                 </div>
-                <!-- 血量条 -->
                 <div class="stat-bar">
                     <span class="stat-label">❤️</span>
                     <div class="bar-bg">
@@ -1609,7 +1861,6 @@
                     </div>
                     <span class="stat-value" id="hpText">100/100</span>
                 </div>
-                <!-- 内力条 -->
                 <div class="stat-bar">
                     <span class="stat-label">💧</span>
                     <div class="bar-bg">
@@ -1618,8 +1869,12 @@
                     <span class="stat-value" id="mpText">50/50</span>
                 </div>
                 <p style="margin-top:8px;">修为: <span id="exp" class="highlight">0</span></p>
-                <h3 style="margin-top:16px;">【 背包物品 】</h3>
-                <ul id="inventory"></ul>
+
+                <!-- ===== 角色列表 ===== -->
+                <h3 style="margin-top:16px;">【 在场人物 】</h3>
+                <div id="characterList" class="character-list">
+                    <!-- 由 JavaScript 动态渲染 -->
+                </div>
             </div>
             <div class="panel">
                 <h3>【 当前场景：终南山下 】</h3>
@@ -1638,7 +1893,7 @@
         // ============================================================
         //  全局状态
         // ============================================================
-        let player = { hp: 100, maxHp: 100, mp: 50, maxMp: 50, exp: 0, inventory: ["初学木剑 x1"] };
+        let player = { hp: 100, maxHp: 100, mp: 50, maxMp: 50, exp: 0 };
         let chatHistory = [];
         let systemMemory = [];
         let conversation = [];
@@ -1668,10 +1923,14 @@
         let currentEditIndex = -1;
         let streamEnabled = true;
 
-        // 三存档系统
         let currentSaveSlot = -1;
 
-        // 难度对应的天赋点
+        // ===== 角色列表数据（仅包含主角和已出现的NPC） =====
+        let characters = [];
+
+        // ===== NPC配置列表（所有可能出现的NPC） =====
+        let npcConfigs = [];
+
         const DIFFICULTY_POINTS = {
             '极简': 9999,
             '简单': 720,
@@ -1680,7 +1939,6 @@
             '极难': 175
         };
 
-        // 属性名称映射
         const ATTR_NAMES = {
             hp: '血量',
             atk: '物攻',
@@ -1692,7 +1950,7 @@
         const ATTR_KEYS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 
         // ============================================================
-        //  默认数据（纯文字版）
+        //  默认数据
         // ============================================================
         const defaultStatusBar = `# 正文开头状态栏协议（纯文字）
 
@@ -1722,6 +1980,11 @@
 - 多用动作描写、环境渲染、心理刻画，富有江湖气息。
 - 避免现代化或口语化词汇。
 - 叙事节奏张弛有度，场景描写细腻，对话生动自然。
+
+# 分段要求（重要）
+- 正文必须分成多个段落，每段不超过5行（每行约20字），段与段之间用空行隔开。
+- 每段表达一个完整的意思或场景切换。
+- 对话、动作、心理描写等均应适当分段，避免大段连续文字。
 
 # 绝对禁止
 
@@ -1776,6 +2039,13 @@
             enabled: true,
             trigger: "全真"
         }];
+
+        // 默认NPC配置（示例）
+        const defaultNPCs = [
+            { id: 'npc_demo1', name: '小龙女', gender: '女', age: 18, hp: 120, mp: 80, exp: '绝世高手', title: '古墓派掌门' },
+            { id: 'npc_demo2', name: '杨过', gender: '男', age: 20, hp: 150, mp: 60, exp: '神雕大侠', title: '玄铁重剑' },
+            { id: 'npc_demo3', name: '郭靖', gender: '男', age: 45, hp: 200, mp: 40, exp: '北侠', title: '襄阳守将' },
+        ];
 
         // ============================================================
         //  工具函数
@@ -1842,6 +2112,33 @@
         }
 
         // ============================================================
+        //  亮度调节
+        // ============================================================
+        function adjustBrightness(value) {
+            const val = parseInt(value) / 100;
+            const clamped = Math.min(1.8, Math.max(0.4, val));
+            document.body.style.filter = `brightness(${clamped})`;
+            localStorage.setItem('sd_brightness', value);
+            const valSpan = getEl('brightnessVal');
+            if (valSpan) valSpan.innerText = value + '%';
+        }
+
+        function initBrightness() {
+            const saved = localStorage.getItem('sd_brightness');
+            const slider = getEl('brightnessSlider');
+            if (saved !== null) {
+                const val = parseInt(saved);
+                if (!isNaN(val) && val >= 40 && val <= 180) {
+                    if (slider) slider.value = val;
+                    adjustBrightness(val);
+                    return;
+                }
+            }
+            if (slider) slider.value = 100;
+            adjustBrightness(100);
+        }
+
+        // ============================================================
         //  存档系统 (三槽位)
         // ============================================================
         function getSaveData(slotIndex) {
@@ -1889,6 +2186,10 @@
             systemMemory = data.systemMemory || [];
             conversation = data.conversation || [];
             playerProfile = data.playerProfile || playerProfile;
+            if (data.characters) characters = data.characters;
+            else characters = [];
+            if (data.npcConfigs) npcConfigs = data.npcConfigs;
+            else npcConfigs = JSON.parse(JSON.stringify(defaultNPCs));
             currentSaveSlot = slotIndex;
             return true;
         }
@@ -1899,7 +2200,9 @@
                 chatHistory: chatHistory,
                 systemMemory: systemMemory,
                 conversation: conversation,
-                playerProfile: playerProfile
+                playerProfile: playerProfile,
+                characters: characters,
+                npcConfigs: npcConfigs
             };
             setSaveData(slotIndex, data);
             currentSaveSlot = slotIndex;
@@ -1923,10 +2226,363 @@
         }
 
         // ============================================================
+        //  角色列表管理
+        // ============================================================
+        function updateCharacterList() {
+            // 确保主角存在且排在第一位
+            const playerName = playerProfile.name || '无名侠客';
+            // 移除旧的主角条目（如果有）
+            characters = characters.filter(c => !c.isPlayer);
+            // 构建主角对象
+            const playerObj = {
+                id: 'player',
+                name: playerName,
+                isPlayer: true,
+                title: '主角',
+                gender: playerProfile.gender || '男',
+                age: playerProfile.age || 16,
+                hp: player.hp || 100,
+                maxHp: player.maxHp || 100,
+                mp: player.mp || 50,
+                maxMp: player.maxMp || 50,
+                exp: player.exp || 0,
+                // 从配置中获取更多信息（可扩展）
+            };
+            characters.unshift(playerObj);
+            // 去重（根据id）
+            const seen = new Set();
+            characters = characters.filter(c => {
+                if (seen.has(c.id)) return false;
+                seen.add(c.id);
+                return true;
+            });
+            // 确保主角仍在第一位
+            const playerIdx = characters.findIndex(c => c.isPlayer);
+            if (playerIdx > 0) {
+                const [p] = characters.splice(playerIdx, 1);
+                characters.unshift(p);
+            }
+            // 同步更新npcConfigs中已存在的角色属性（如果有变化）
+            characters.forEach(ch => {
+                if (!ch.isPlayer) {
+                    const cfg = npcConfigs.find(n => n.name === ch.name);
+                    if (cfg) {
+                        // 合并属性
+                        ch.gender = cfg.gender || ch.gender;
+                        ch.age = cfg.age || ch.age;
+                        ch.hp = cfg.hp || ch.hp;
+                        ch.maxHp = cfg.hp || ch.maxHp;
+                        ch.mp = cfg.mp || ch.mp;
+                        ch.maxMp = cfg.mp || ch.maxMp;
+                        ch.exp = cfg.exp || ch.exp;
+                        ch.title = cfg.title || ch.title;
+                    }
+                }
+            });
+            renderCharacterList();
+            // 保存
+            saveGame();
+        }
+
+        function renderCharacterList() {
+            const container = getEl('characterList');
+            if (!container) return;
+            if (!characters || characters.length === 0) {
+                container.innerHTML = `<div style="color:#4a7a9a;font-size:13px;padding:6px;">暂无角色</div>`;
+                return;
+            }
+            let html = '';
+            characters.forEach(ch => {
+                const avatarChar = ch.name.charAt(0).toUpperCase() || '?';
+                const isPlayer = ch.isPlayer || false;
+                const title = ch.title || (isPlayer ? '主角' : 'NPC');
+                const sub = ch.gender || '';
+                html += `
+                    <div class="character-item" data-id="${ch.id}">
+                        <div class="avatar ${isPlayer ? 'player-avatar' : ''}">${escapeHtml(avatarChar)}</div>
+                        <div class="info">
+                            <div class="name">${escapeHtml(ch.name)}</div>
+                            ${sub ? `<div class="sub">${escapeHtml(sub)}</div>` : ''}
+                        </div>
+                        <span class="badge ${isPlayer ? 'player-badge' : ''}">${escapeHtml(title)}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+
+            // 点击事件：显示角色详情
+            container.querySelectorAll('.character-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const ch = characters.find(c => c.id === id);
+                    if (ch) {
+                        showCharDetail(ch);
+                    }
+                });
+            });
+        }
+
+        // ===== 显示角色详情 =====
+        function showCharDetail(ch) {
+            const modal = getEl('charDetailModal');
+            const title = getEl('charDetailTitle');
+            const body = getEl('charDetailBody');
+            if (!modal || !title || !body) return;
+
+            title.textContent = `【 ${ch.name} 】`;
+            let rows = [];
+            if (ch.gender) rows.push({ label: '性别', value: ch.gender });
+            if (ch.age) rows.push({ label: '年龄', value: ch.age });
+            if (ch.hp !== undefined) rows.push({ label: '气血', value: `${ch.hp}/${ch.maxHp || ch.hp}` });
+            if (ch.mp !== undefined) rows.push({ label: '内力', value: `${ch.mp}/${ch.maxMp || ch.mp}` });
+            if (ch.exp !== undefined) rows.push({ label: '修为', value: ch.exp });
+            if (ch.title) rows.push({ label: '身份', value: ch.title });
+            if (ch.isPlayer) {
+                rows.push({ label: '职业', value: '主角' });
+            } else {
+                rows.push({ label: '类型', value: 'NPC' });
+            }
+            let html = rows.map(r => `
+                <div class="detail-row">
+                    <span class="label">${r.label}</span>
+                    <span class="value">${escapeHtml(String(r.value))}</span>
+                </div>
+            `).join('');
+            body.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function closeCharDetail() {
+            const modal = getEl('charDetailModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        // ===== 从正文中提取NPC并加入列表 =====
+        function extractAndAddNPCs(text) {
+            if (!text || !npcConfigs.length) return;
+            const names = npcConfigs.map(c => c.name).filter(Boolean);
+            names.forEach(name => {
+                // 检查正文中是否包含该名字（简单匹配，可改进）
+                if (text.includes(name)) {
+                    // 检查是否已在characters中（除主角外）
+                    const exist = characters.some(c => c.name === name && !c.isPlayer);
+                    if (!exist) {
+                        // 从配置中获取信息
+                        const cfg = npcConfigs.find(n => n.name === name);
+                        if (cfg) {
+                            const newNPC = {
+                                id: 'npc_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                                name: cfg.name,
+                                isPlayer: false,
+                                gender: cfg.gender || '',
+                                age: cfg.age || '',
+                                hp: cfg.hp || 100,
+                                maxHp: cfg.hp || 100,
+                                mp: cfg.mp || 50,
+                                maxMp: cfg.mp || 50,
+                                exp: cfg.exp || '',
+                                title: cfg.title || 'NPC',
+                            };
+                            characters.push(newNPC);
+                        }
+                    }
+                }
+            });
+            if (characters.length > 0) {
+                updateCharacterList();
+                saveGame();
+            }
+        }
+
+        // ============================================================
+        //  NPC配置管理
+        // ============================================================
+        function renderNPCConfigs() {
+            const container = getEl('npcConfigContainer');
+            if (!container) return;
+            if (!npcConfigs || npcConfigs.length === 0) {
+                container.innerHTML = `<div style="color:#4a7a9a;text-align:center;padding:12px;font-size:13px;">暂无NPC配置，请添加</div>`;
+                return;
+            }
+            let html = '';
+            npcConfigs.forEach((npc, index) => {
+                html += `
+                    <div class="prompt-item-card" style="padding:6px 10px;">
+                        <div class="card-top-row">
+                            <div class="card-meta">
+                                <span style="font-weight:bold;">${escapeHtml(npc.name)}</span>
+                                <span class="card-tag">${escapeHtml(npc.title || 'NPC')}</span>
+                            </div>
+                            <div class="card-controls">
+                                <button class="btn-small" style="background:var(--btn-bg);color:#fff;border-color:var(--btn-bg);" onclick="editNPC(${index})">✏️</button>
+                                <button class="btn-small" style="background:#d15c5c;color:#fff;border-color:#d15c5c;" onclick="deleteNPC(${index})">🗑</button>
+                            </div>
+                        </div>
+                        <div style="font-size:11px;color:#4a7a9a;display:flex;gap:12px;flex-wrap:wrap;">
+                            <span>性别: ${escapeHtml(npc.gender || '未知')}</span>
+                            <span>年龄: ${escapeHtml(npc.age || '?')}</span>
+                            <span>HP: ${npc.hp || 100}</span>
+                            <span>MP: ${npc.mp || 50}</span>
+                            <span>修为: ${escapeHtml(npc.exp || '')}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function addNewNPC() {
+            // 打开编辑模态框，清空字段
+            const modal = getEl('editNPCModel');
+            const title = getEl('editNPCTitle');
+            const idInput = getEl('editNPCId');
+            const nameInput = getEl('editNPCName');
+            const genderInput = getEl('editNPCGender');
+            const ageInput = getEl('editNPCAge');
+            const hpInput = getEl('editNPCHp');
+            const mpInput = getEl('editNPCMp');
+            const expInput = getEl('editNPCExp');
+            const titleInput = getEl('editNPCTitle');
+            if (!modal) return;
+            title.textContent = '➕ 新增NPC';
+            idInput.value = '';
+            nameInput.value = '';
+            genderInput.value = '';
+            ageInput.value = '';
+            hpInput.value = 100;
+            mpInput.value = 50;
+            expInput.value = '';
+            titleInput.value = '';
+            modal.classList.add('active');
+        }
+
+        function editNPC(index) {
+            if (!isIndexValid(npcConfigs, index)) return;
+            const npc = npcConfigs[index];
+            const modal = getEl('editNPCModel');
+            const title = getEl('editNPCTitle');
+            const idInput = getEl('editNPCId');
+            const nameInput = getEl('editNPCName');
+            const genderInput = getEl('editNPCGender');
+            const ageInput = getEl('editNPCAge');
+            const hpInput = getEl('editNPCHp');
+            const mpInput = getEl('editNPCMp');
+            const expInput = getEl('editNPCExp');
+            const titleInput = getEl('editNPCTitle');
+            if (!modal) return;
+            title.textContent = '✏️ 编辑NPC';
+            idInput.value = index;
+            nameInput.value = npc.name || '';
+            genderInput.value = npc.gender || '';
+            ageInput.value = npc.age || '';
+            hpInput.value = npc.hp || 100;
+            mpInput.value = npc.mp || 50;
+            expInput.value = npc.exp || '';
+            titleInput.value = npc.title || '';
+            modal.classList.add('active');
+        }
+
+        function deleteNPC(index) {
+            if (!isIndexValid(npcConfigs, index)) return;
+            if (!confirm(`确定要删除NPC“${npcConfigs[index].name}”吗？`)) return;
+            npcConfigs.splice(index, 1);
+            localStorage.setItem('sd_npc_configs', JSON.stringify(npcConfigs));
+            renderNPCConfigs();
+            // 同时从characters中移除该NPC（如果存在）
+            const name = npcConfigs[index]?.name;
+            if (name) {
+                characters = characters.filter(c => c.name !== name || c.isPlayer);
+                updateCharacterList();
+            }
+            saveGame();
+        }
+
+        function saveNPCFromModal() {
+            const idInput = getEl('editNPCId');
+            const nameInput = getEl('editNPCName');
+            const genderInput = getEl('editNPCGender');
+            const ageInput = getEl('editNPCAge');
+            const hpInput = getEl('editNPCHp');
+            const mpInput = getEl('editNPCMp');
+            const expInput = getEl('editNPCExp');
+            const titleInput = getEl('editNPCTitle');
+            const name = nameInput.value.trim();
+            if (!name) { alert('名字不能为空！'); return; }
+            const gender = genderInput.value.trim();
+            const age = parseInt(ageInput.value) || undefined;
+            const hp = parseInt(hpInput.value) || 100;
+            const mp = parseInt(mpInput.value) || 50;
+            const exp = expInput.value.trim();
+            const title = titleInput.value.trim() || 'NPC';
+
+            const index = idInput.value;
+            if (index === '') {
+                // 新增
+                const newNPC = {
+                    id: 'npc_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                    name,
+                    gender,
+                    age,
+                    hp,
+                    mp,
+                    exp,
+                    title
+                };
+                npcConfigs.push(newNPC);
+            } else {
+                // 编辑
+                const idx = parseInt(index);
+                if (!isIndexValid(npcConfigs, idx)) { alert('数据错误'); return; }
+                npcConfigs[idx].name = name;
+                npcConfigs[idx].gender = gender;
+                npcConfigs[idx].age = age;
+                npcConfigs[idx].hp = hp;
+                npcConfigs[idx].mp = mp;
+                npcConfigs[idx].exp = exp;
+                npcConfigs[idx].title = title;
+            }
+            localStorage.setItem('sd_npc_configs', JSON.stringify(npcConfigs));
+            renderNPCConfigs();
+            closeNPCModal();
+            // 更新角色列表（如果已在列表中，更新属性）
+            characters.forEach(ch => {
+                if (!ch.isPlayer && ch.name === name) {
+                    ch.gender = gender;
+                    ch.age = age;
+                    ch.hp = hp;
+                    ch.maxHp = hp;
+                    ch.mp = mp;
+                    ch.maxMp = mp;
+                    ch.exp = exp;
+                    ch.title = title;
+                }
+            });
+            updateCharacterList();
+            saveGame();
+        }
+
+        function closeNPCModal() {
+            const modal = getEl('editNPCModel');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function resetDefaultNPCs() {
+            if (!confirm('重置将丢失所有自定义NPC配置，确定吗？')) return;
+            npcConfigs = JSON.parse(JSON.stringify(defaultNPCs));
+            localStorage.setItem('sd_npc_configs', JSON.stringify(npcConfigs));
+            renderNPCConfigs();
+            // 清空现有NPC角色（保留主角）
+            characters = characters.filter(c => c.isPlayer);
+            updateCharacterList();
+            saveGame();
+        }
+
+        // ============================================================
         //  初始化
         // ============================================================
         window.onload = function() {
             initTheme();
+            initBrightness();
 
             const volSlider = getEl('volumeSlider');
             if (volSlider) { volSlider.value = 50;
@@ -1938,7 +2594,7 @@
             if (savedKey) { const el = getEl('apiKeyInput'); if (el) el.value = savedKey; }
             const savedModel = localStorage.getItem('sd_api_model');
             if (savedModel) { const el = getEl('modelSelect'); if (el) el.innerHTML =
-                `<option value="${savedModel}">${savedModel}</option>`; }
+                    `<option value="${savedModel}">${savedModel}</option>`; }
             const savedLength = localStorage.getItem('sd_reply_length');
             if (savedLength) { const el = getEl('replyLengthInput'); if (el) el.value = savedLength; }
 
@@ -1947,7 +2603,6 @@
             const st = getEl('streamToggle');
             if (st) st.checked = streamEnabled;
 
-            // 正文规则
             const savedStatusEnabled = localStorage.getItem('sd_statusbar_enabled');
             statusBarEnabled = savedStatusEnabled !== null ? savedStatusEnabled === 'true' : true;
             const stToggle = getEl('statusBarToggle');
@@ -1966,6 +2621,10 @@
             const smEl = getEl('semanticContent');
             if (smEl) smEl.value = semanticContent;
 
+            // 加载NPC配置
+            const storedNPC = localStorage.getItem('sd_npc_configs');
+            npcConfigs = storedNPC ? JSON.parse(storedNPC) : JSON.parse(JSON.stringify(defaultNPCs));
+
             const storedPreset = localStorage.getItem('sd_preset_list');
             presetList = storedPreset ? JSON.parse(storedPreset) : JSON.parse(JSON.stringify(defaultPresets));
             const storedLore = localStorage.getItem('sd_lorebook_list');
@@ -1973,8 +2632,8 @@
 
             renderPromptList('preset');
             renderPromptList('lorebook');
+            renderNPCConfigs();
 
-            // 检查是否有旧存档，迁移到槽位1
             const oldSave = localStorage.getItem('sd_player_save');
             if (oldSave && !getSaveData(0)) {
                 try {
@@ -1983,12 +2642,15 @@
                     const oldMem = JSON.parse(localStorage.getItem('sd_memory_save') || '[]');
                     const oldConv = JSON.parse(localStorage.getItem('sd_conversation') || '[]');
                     const oldProfile = JSON.parse(localStorage.getItem('sd_player_profile') || 'null');
+                    const oldChars = [];
                     setSaveData(0, {
                         player: oldPlayer,
                         chatHistory: oldChat,
                         systemMemory: oldMem,
                         conversation: oldConv,
-                        playerProfile: oldProfile || playerProfile
+                        playerProfile: oldProfile || playerProfile,
+                        characters: oldChars,
+                        npcConfigs: npcConfigs
                     });
                     localStorage.removeItem('sd_player_save');
                     localStorage.removeItem('sd_chat_save');
@@ -2010,6 +2672,13 @@
 
             const audio = getEl('bgMusic');
             if (audio) audio.volume = 0.5;
+
+            // 如果存在存档，但没有角色列表，初始化一个默认的（仅主角）
+            if (currentSaveSlot >= 0 && characters.length === 0) {
+                const pName = playerProfile.name || '无名侠客';
+                characters = [{ id: 'player', name: pName, isPlayer: true, title: '主角' }];
+                updateCharacterList();
+            }
         };
 
         // ============================================================
@@ -2058,7 +2727,7 @@
         }
 
         // ============================================================
-        //  导入 JSON
+        //  导入 JSON (预设/世界书)
         // ============================================================
         function handleJsonImport(inputElement, type) {
             const file = inputElement.files[0];
@@ -2070,15 +2739,16 @@
                     let items = null;
                     if (Array.isArray(rawData)) items = rawData;
                     else if (rawData.prompts && Array.isArray(rawData.prompts)) items = rawData.prompts;
-                    else if (rawData.entries && typeof rawData.entries === 'object') items = Object.values(rawData.entries);
+                    else if (rawData.entries && typeof rawData.entries === 'object') items = Object.values(rawData
+                    .entries);
                     else { alert('JSON 格式错误：必须为数组、包含 prompts 数组的对象，或包含 entries 对象的酒馆格式。'); return; }
                     if (!items || items.length === 0) { alert('未找到有效条目。'); return; }
                     const mapped = items.map(item => {
                         const name = (item.comment || item.name || '').trim();
                         const content = (item.content || '').trim();
                         if (!name || !content) return null;
-                        const id = item.id || item.uid || Date.now().toString(36) + Math.random().toString(36).substr(
-                            2, 4);
+                        const id = item.id || item.uid || Date.now().toString(36) + Math.random().toString(36)
+                            .substr(2, 4);
                         const enabled = (item.disable !== undefined) ? !item.disable : true;
                         const tag = item.role || item.tag || 'default';
                         const result = { id: String(id), name, content, enabled, tag };
@@ -2117,7 +2787,7 @@
             if (!container) return;
             if (!list || list.length === 0) {
                 container.innerHTML =
-                `<div style="color:#4a7a9a;text-align:center;padding:20px;">暂无条目，请添加或导入</div>`;
+                    `<div style="color:#4a7a9a;text-align:center;padding:12px;font-size:13px;">暂无条目，请添加或导入</div>`;
                 return;
             }
             let html = '';
@@ -2126,34 +2796,34 @@
                 const disabledClass = item.enabled ? '' : 'disabled-card';
                 const displayContent = escapeHtml(item.content || '');
                 html += `
-                    <div class="prompt-item-card ${disabledClass}" data-index="${index}">
-                        <div class="card-top-row">
-                            <div class="card-meta">
-                                <span style="font-weight:bold;">${escapeHtml(item.name)}</span>
-                                <span class="card-tag">${escapeHtml(item.tag || 'default')}</span>
-                                ${isLore ? `<span class="card-tag" style="background:#d0e4f4;">触发词: ${escapeHtml(item.trigger || '')}</span>` : ''}
+                        <div class="prompt-item-card ${disabledClass}" data-index="${index}">
+                            <div class="card-top-row">
+                                <div class="card-meta">
+                                    <span style="font-weight:bold;">${escapeHtml(item.name)}</span>
+                                    <span class="card-tag">${escapeHtml(item.tag || 'default')}</span>
+                                    ${isLore ? `<span class="card-tag" style="background:#d0e4f4;">触发词: ${escapeHtml(item.trigger || '')}</span>` : ''}
+                                </div>
+                                <div class="card-controls">
+                                    <button class="btn-small" style="background:var(--btn-bg);color:#fff;border-color:var(--btn-bg);" onclick="event.stopPropagation(); openEditModal('${type}', ${index})">✏️</button>
+                                    <button class="arrow-btn" onclick="moveItem('${type}', ${index}, -1)" title="上移">⬆</button>
+                                    <button class="arrow-btn" onclick="moveItem('${type}', ${index}, 1)" title="下移">⬇</button>
+                                    <label class="switch">
+                                        <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleItem('${type}', ${index}, this.checked)">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <button class="btn-small" style="background:#d15c5c;color:#fff;border-color:#d15c5c;" onclick="deleteItem('${type}', ${index})">🗑</button>
+                                </div>
                             </div>
-                            <div class="card-controls">
-                                <button class="btn-small" style="background:var(--btn-bg);color:#fff;border-color:var(--btn-bg);" onclick="event.stopPropagation(); openEditModal('${type}', ${index})">✏️</button>
-                                <button class="arrow-btn" onclick="moveItem('${type}', ${index}, -1)" title="上移">⬆</button>
-                                <button class="arrow-btn" onclick="moveItem('${type}', ${index}, 1)" title="下移">⬇</button>
-                                <label class="switch">
-                                    <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleItem('${type}', ${index}, this.checked)">
-                                    <span class="slider"></span>
-                                </label>
-                                <button class="btn-small" style="background:#d15c5c;color:#fff;border-color:#d15c5c;" onclick="deleteItem('${type}', ${index})">🗑</button>
-                            </div>
+                            ${isLore ? `
+                                <div style="display:flex;gap:4px;align-items:center;font-size:11px;color:var(--text-primary);">
+                                    <span>触发关键词：</span>
+                                    <input type="text" value="${escapeHtml(item.trigger || '')}" style="flex:1;background:var(--bg-card);border:2px solid var(--input-border);color:var(--text-primary);padding:1px 6px;border-radius:4px;font-size:11px;" onchange="updateItemTrigger(${index}, this.value)">
+                                </div>
+                            ` : ''}
+                            <div class="card-content-display">${displayContent}</div>
+                            <textarea class="card-edit-area" rows="2" style="display:none;" readonly>${displayContent}</textarea>
                         </div>
-                        ${isLore ? `
-                            <div style="display:flex;gap:6px;align-items:center;font-size:12px;color:var(--text-primary);">
-                                <span>触发关键词：</span>
-                                <input type="text" value="${escapeHtml(item.trigger || '')}" style="flex:1;background:var(--bg-card);border:2px solid var(--input-border);color:var(--text-primary);padding:2px 8px;border-radius:4px;" onchange="updateItemTrigger(${index}, this.value)">
-                            </div>
-                        ` : ''}
-                        <div class="card-content-display">${displayContent}</div>
-                        <textarea class="card-edit-area" rows="2" style="display:none;" readonly>${displayContent}</textarea>
-                    </div>
-                `;
+                    `;
             });
             container.innerHTML = html;
         }
@@ -2219,7 +2889,7 @@
         }
 
         // ============================================================
-        //  编辑模态框
+        //  编辑模态框（预设/世界书）
         // ============================================================
         function openEditModal(type, index) {
             const list = type === 'preset' ? presetList : lorebookList;
@@ -2286,7 +2956,7 @@
             }
 
             localStorage.setItem(currentEditType === 'preset' ? 'sd_preset_list' : 'sd_lorebook_list', JSON.stringify(
-            list));
+                list));
             renderPromptList(currentEditType);
             closeEditModal();
             alert('✅ 修改已保存！');
@@ -2301,6 +2971,10 @@
             const panel = getEl(tabId);
             if (panel) panel.classList.add('active');
             if (element) element.classList.add('active');
+            // 刷新NPC配置显示
+            if (tabId === 'tab-npc') {
+                renderNPCConfigs();
+            }
         }
 
         function toggleSettings(show) {
@@ -2320,6 +2994,16 @@
                 if (streamT) streamT.checked = streamEnabled;
                 const theme = document.body.classList.contains('theme-cool') ? 'cool' : 'warm';
                 setTheme(theme);
+                const brightSlider = getEl('brightnessSlider');
+                if (brightSlider) {
+                    const saved = localStorage.getItem('sd_brightness');
+                    if (saved) {
+                        brightSlider.value = saved;
+                        const valSpan = getEl('brightnessVal');
+                        if (valSpan) valSpan.innerText = saved + '%';
+                    }
+                }
+                renderNPCConfigs();
             } else {
                 modal.classList.remove('active');
             }
@@ -2345,6 +3029,7 @@
 
             localStorage.setItem('sd_preset_list', JSON.stringify(presetList));
             localStorage.setItem('sd_lorebook_list', JSON.stringify(lorebookList));
+            localStorage.setItem('sd_npc_configs', JSON.stringify(npcConfigs));
 
             if (lengthInput) {
                 const val = parseInt(lengthInput.value);
@@ -2352,22 +3037,28 @@
                 else { alert('字数请设置在 100~20000 之间'); return; }
             }
 
-            if (streamToggle) { streamEnabled = streamToggle.checked;
-                localStorage.setItem('sd_stream_enabled', String(streamEnabled)); }
+            if (streamToggle) {
+                streamEnabled = streamToggle.checked;
+                localStorage.setItem('sd_stream_enabled', String(streamEnabled));
+            }
 
             const st = getEl('statusBarToggle');
             const sc = getEl('statusBarContent');
-            if (st && sc) { statusBarEnabled = st.checked;
+            if (st && sc) {
+                statusBarEnabled = st.checked;
                 statusBarContent = sc.value.trim() || defaultStatusBar;
                 localStorage.setItem('sd_statusbar_enabled', String(statusBarEnabled));
-                localStorage.setItem('sd_statusbar_content', statusBarContent); }
+                localStorage.setItem('sd_statusbar_content', statusBarContent);
+            }
 
             const smt = getEl('semanticToggle');
             const smc = getEl('semanticContent');
-            if (smt && smc) { semanticEnabled = smt.checked;
+            if (smt && smc) {
+                semanticEnabled = smt.checked;
                 semanticContent = smc.value.trim() || defaultSemantic;
                 localStorage.setItem('sd_semantic_enabled', String(semanticEnabled));
-                localStorage.setItem('sd_semantic_content', semanticContent); }
+                localStorage.setItem('sd_semantic_content', semanticContent);
+            }
 
             alert('设置已成功安全封存入本地！');
             toggleSettings(false);
@@ -2399,8 +3090,14 @@
                 else if (result.data && Array.isArray(result.data)) models = result.data;
                 else if (result.models && Array.isArray(result.models)) models = result.models;
                 else if (result.list && Array.isArray(result.list)) models = result.list;
-                else { for (let key in result) { if (Array.isArray(result[key]) && result[key].length > 0 && result[key][0]
-                            .id) { models = result[key]; break; } } }
+                else {
+                    for (let key in result) {
+                        if (Array.isArray(result[key]) && result[key].length > 0 && result[key][0].id) {
+                            models = result[key];
+                            break;
+                        }
+                    }
+                }
                 if (models && models.length > 0) {
                     modelSelect.innerHTML = "";
                     models.forEach(model => {
@@ -2480,58 +3177,51 @@
                     const mp = p.mp || 50;
                     const exp = p.exp || 0;
                     saveList.innerHTML += `
-                        <div class="save-slot">
-                            <div>
-                                <div class="slot-title">📜 存档 ${slotNum}</div>
-                                <div class="slot-detail">
-                                    <div>【${escapeHtml(name)}】· ${diff}</div>
-                                    <div>气血 ${hp} | 内力 ${mp} | 修为 ${exp}</div>
+                            <div class="save-slot">
+                                <div>
+                                    <div class="slot-title">📜 存档 ${slotNum}</div>
+                                    <div class="slot-detail">
+                                        <div>【${escapeHtml(name)}】· ${diff}</div>
+                                        <div>气血 ${hp} | 内力 ${mp} | 修为 ${exp}</div>
+                                    </div>
+                                </div>
+                                <div class="slot-actions">
+                                    <button class="btn-small" onclick="loadAndEnterGame(${i})">读取</button>
+                                    <button class="btn-small danger" onclick="deleteSaveSlot(${i})">删除</button>
                                 </div>
                             </div>
-                            <div class="slot-actions">
-                                <button class="btn-small" onclick="loadAndEnterGame(${i})">读取</button>
-                                <button class="btn-small danger" onclick="deleteSaveSlot(${i})">删除</button>
-                            </div>
-                        </div>
-                    `;
+                        `;
                 } else {
                     hasEmptySlot = true;
                     saveList.innerHTML += `
-                        <div class="save-slot save-slot-empty" onclick="createNewCharacter(${i})">
-                            <div>
-                                <div class="slot-title">📭 空存档 ${slotNum}</div>
-                                <div class="slot-detail">点击创建新角色</div>
+                            <div class="save-slot save-slot-empty" onclick="createNewCharacter(${i})">
+                                <div>
+                                    <div class="slot-title">📭 空存档 ${slotNum}</div>
+                                    <div class="slot-detail">点击创建新角色</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                 }
             }
 
-            // 始终显示一个"新建存档"入口
             if (isAllSlotFull()) {
                 saveList.innerHTML += `
-                    <div class="save-slot save-slot-empty" onclick="handleCreateNewWhenFull()">
-                        <div>
-                            <div class="slot-title">➕ 新建存档</div>
-                            <div class="slot-detail">存档已满，点击覆盖</div>
+                        <div class="save-slot save-slot-empty" onclick="handleCreateNewWhenFull()">
+                            <div>
+                                <div class="slot-title">➕ 新建存档</div>
+                                <div class="slot-detail">存档已满，点击覆盖</div>
+                            </div>
                         </div>
-                    </div>
-                `;
-            } else {
-                // 如果还有空位，但上面已经列出了空位，这里可以不加，或者加一个引导
-                // 但如果3个都满了，上面的逻辑会显示"新建存档"卡片
-                // 如果没满，已经显示了空槽位，就不需要额外的新建卡片了
+                    `;
             }
         }
 
         function handleCreateNewWhenFull() {
             if (!isAllSlotFull()) {
-                // 实际上不应该触发，但以防万一
                 alert('还有空存档位，请直接点击空存档创建。');
                 renderSaveList();
                 return;
             }
-            // 弹窗让用户选择覆盖哪个槽位
             const choice = prompt(
                 '存档已满！请输入要覆盖的存档编号 (1, 2, 3)：\n' +
                 '1: ' + (getSaveData(0) ? '📜 存档1' : '空') + '\n' +
@@ -2544,7 +3234,6 @@
                 alert('请输入有效的编号 1、2 或 3。');
                 return;
             }
-            // 确认覆盖
             if (!confirm(`确定要覆盖存档 ${slotIndex + 1} 吗？原有数据将丢失！`)) return;
             createNewCharacter(slotIndex);
         }
@@ -2558,14 +3247,12 @@
         }
 
         function createNewCharacter(slotIndex) {
-            // 如果该槽位已有数据，先删除
             if (getSaveData(slotIndex)) {
                 if (!confirm(`存档 ${slotIndex + 1} 已有数据，确定要覆盖吗？`)) return;
                 deleteSaveData(slotIndex);
             }
 
-            // 初始化角色
-            player = { hp: 100, maxHp: 100, mp: 50, maxMp: 50, exp: 0, inventory: ["初学木剑 x1"] };
+            player = { hp: 100, maxHp: 100, mp: 50, maxMp: 50, exp: 0 };
             chatHistory = [];
             systemMemory = [];
             conversation = [];
@@ -2579,6 +3266,7 @@
                 attributes: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
                 talentPoints: 600
             };
+            characters = [];
             wizardStep = 0;
             currentSaveSlot = slotIndex;
 
@@ -2590,7 +3278,6 @@
         }
 
         function continueGame() {
-            // 查找第一个有存档的槽位
             for (let i = 0; i < 3; i++) {
                 if (getSaveData(i)) {
                     loadAndEnterGame(i);
@@ -2610,7 +3297,6 @@
             if (wizard) wizard.classList.remove('active');
             if (gameScreen) gameScreen.classList.add('active');
 
-            // 更新玩家信息
             const nameEl = getEl('playerName');
             const genderEl = getEl('playerGender');
             const ageEl = getEl('playerAge');
@@ -2618,18 +3304,16 @@
             if (genderEl) genderEl.textContent = playerProfile.gender || '男';
             if (ageEl) ageEl.textContent = playerProfile.age || 16;
 
-            // 更新HP/MP条
             updateStatsUI();
 
-            // 更新修为
             const expEl = getEl('exp');
             if (expEl) expEl.innerText = player.exp || 0;
 
-            updateInventoryUI();
             const cb = getEl('chatBox');
             if (cb) { cb.innerHTML = chatHistory.join('');
                 cb.scrollTop = cb.scrollHeight; }
-            // 保存当前存档
+
+            updateCharacterList();
             saveCurrentToSlot(currentSaveSlot);
         }
 
@@ -2648,13 +3332,6 @@
             const mpText = getEl('mpText');
             if (mpBar) mpBar.style.width = Math.min(100, (mp / maxMp) * 100) + '%';
             if (mpText) mpText.textContent = `${Math.floor(mp)}/${Math.floor(maxMp)}`;
-        }
-
-        function updateInventoryUI() {
-            const inv = getEl('inventory');
-            if (!inv) return;
-            const items = player.inventory || [];
-            inv.innerHTML = items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
         }
 
         function returnToMain() {
@@ -2676,50 +3353,50 @@
             if (wizardStep === 0) {
                 title.innerText = "缘起 · 江湖";
                 content.innerHTML = `
-                    <div class="story-text">
-                        自古以来，江湖风云变幻莫测。<br>
-                        南宋末年，蒙古大军大举南下，襄阳城头战火连天。<br>
-                        古墓派、全真教、丐帮等各路武林宗派，尽数卷入这场家国浩劫。<br>
-                        一场机缘巧合之下，你莫名挣脱凡尘桎梏，踏入这片刀光剑影，开启漫漫江湖征途。
-                    </div>
-                    <div class="form-row-center">
-                        <div class="form-group">
-                            <label>姓 名</label>
-                            <input id="nameInput" class="form-input" value="${escapeHtml(playerProfile.name)}">
+                        <div class="story-text">
+                            自古以来，江湖风云变幻莫测。<br>
+                            南宋末年，蒙古大军大举南下，襄阳城头战火连天。<br>
+                            古墓派、全真教、丐帮等各路武林宗派，尽数卷入这场家国浩劫。<br>
+                            一场机缘巧合之下，你莫名挣脱凡尘桎梏，踏入这片刀光剑影，开启漫漫江湖征途。
                         </div>
-                        <div class="form-group">
-                            <label>性 别</label>
-                            <input id="genderInput" class="form-input" value="${escapeHtml(playerProfile.gender)}">
+                        <div class="form-row-center">
+                            <div class="form-group">
+                                <label>姓 名</label>
+                                <input id="nameInput" class="form-input" value="${escapeHtml(playerProfile.name)}">
+                            </div>
+                            <div class="form-group">
+                                <label>性 别</label>
+                                <input id="genderInput" class="form-input" value="${escapeHtml(playerProfile.gender)}">
+                            </div>
+                            <div class="form-group">
+                                <label>年 龄</label>
+                                <input id="ageInput" class="form-input" value="${playerProfile.age || 16}" inputmode="numeric" pattern="[0-9]*">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>年 龄</label>
-                            <input id="ageInput" class="form-input" value="${playerProfile.age || 16}" inputmode="numeric" pattern="[0-9]*">
-                        </div>
-                    </div>
-                `;
+                    `;
             } else if (wizardStep === 1) {
                 title.innerText = "选择难度 · 天赋根基";
                 const diffs = ['极简', '简单', '普通', '困难', '极难'];
                 content.innerHTML = `
-                    <p style="color:var(--text-primary);margin-bottom:20px;font-size:18px;">选择你的江湖难度，天赋点数将决定你的成长上限</p>
-                    <div class="diff-grid">
-                        ${diffs.map(d => {
-                            const pts = DIFFICULTY_POINTS[d];
-                            const selected = playerProfile.difficulty === d;
-                            return `
-                                <div class="diff-option ${selected ? 'selected' : ''}" 
-                                     onclick="playerProfile.difficulty='${d}'; playerProfile.talentPoints=${pts}; renderWizard();"
-                                     title="天赋点：${pts}">
-                                    <div class="diff-name">${d}</div>
-                                    <div class="diff-points">✦ ${pts} 天赋点</div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                    <div style="margin-top:20px;font-size:15px;color:var(--text-primary);">
-                        当前天赋：<strong style="color:var(--highlight);">${playerProfile.talentPoints}</strong> 点
-                    </div>
-                `;
+                        <p style="color:var(--text-primary);margin-bottom:20px;font-size:18px;">选择你的江湖难度，天赋点数将决定你的成长上限</p>
+                        <div class="diff-grid">
+                            ${diffs.map(d => {
+                                const pts = DIFFICULTY_POINTS[d];
+                                const selected = playerProfile.difficulty === d;
+                                return `
+                                    <div class="diff-option ${selected ? 'selected' : ''}" 
+                                         onclick="playerProfile.difficulty='${d}'; playerProfile.talentPoints=${pts}; renderWizard();"
+                                         title="天赋点：${pts}">
+                                        <div class="diff-name">${d}</div>
+                                        <div class="diff-points">✦ ${pts} 天赋点</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div style="margin-top:20px;font-size:15px;color:var(--text-primary);">
+                            当前天赋：<strong style="color:var(--highlight);">${playerProfile.talentPoints}</strong> 点
+                        </div>
+                    `;
             } else if (wizardStep === 2) {
                 title.innerText = "天赋加点 · 六脉根基";
                 if (!playerProfile.attributes) {
@@ -2735,73 +3412,73 @@
                     const val = attrs[key] || 0;
                     const label = ATTR_NAMES[key];
                     attrHtml += `
-                        <div class="attr-row">
-                            <span class="attr-name">${label}</span>
-                            <input type="range" class="attr-slider" min="0" max="120" value="${val}" 
-                                   oninput="updateAttr('${key}', this.value)" 
-                                   id="attr_${key}">
-                            <span class="attr-value" id="attrVal_${key}">${val}</span>
-                            <div class="attr-btns">
-                                <button onclick="adjustAttr('${key}', -1)" id="attrDec_${key}">−</button>
-                                <button onclick="adjustAttr('${key}', 1)" id="attrInc_${key}">+</button>
+                            <div class="attr-row">
+                                <span class="attr-name">${label}</span>
+                                <input type="range" class="attr-slider" min="0" max="120" value="${val}" 
+                                       oninput="updateAttr('${key}', this.value)" 
+                                       id="attr_${key}">
+                                <span class="attr-value" id="attrVal_${key}">${val}</span>
+                                <div class="attr-btns">
+                                    <button onclick="adjustAttr('${key}', -1)" id="attrDec_${key}">−</button>
+                                    <button onclick="adjustAttr('${key}', 1)" id="attrInc_${key}">+</button>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                 });
 
                 content.innerHTML = `
-                    <div style="font-size:16px;color:var(--text-primary);margin-bottom:12px;">
-                        总天赋点：<strong style="color:var(--highlight);">${totalPoints}</strong> 
-                        ｜ 已分配：<strong>${used}</strong> 
-                        ｜ 剩余：<strong id="remainPoints" style="color:${remain < 0 ? '#d15c5c' : 'var(--highlight)'};">${remain}</strong>
-                    </div>
-                    <div class="attr-grid">${attrHtml}</div>
-                    <div style="font-size:13px;color:#4a7a9a;margin-top:8px;">每项属性上限120，每点消耗1天赋点</div>
-                `;
+                        <div style="font-size:16px;color:var(--text-primary);margin-bottom:12px;">
+                            总天赋点：<strong style="color:var(--highlight);">${totalPoints}</strong> 
+                            ｜ 已分配：<strong>${used}</strong> 
+                            ｜ 剩余：<strong id="remainPoints" style="color:${remain < 0 ? '#d15c5c' : 'var(--highlight)'};">${remain}</strong>
+                        </div>
+                        <div class="attr-grid">${attrHtml}</div>
+                        <div style="font-size:13px;color:#4a7a9a;margin-top:8px;">每项属性上限120，每点消耗1天赋点</div>
+                    `;
             } else if (wizardStep === 3) {
                 title.innerText = "角色出身";
                 const origins = ['武林世家', '书香门第', '终南山猎户', '流浪乞儿', '商贾富豪', '隐世高人遗孤'];
                 content.innerHTML = `
-                    <p style="color:var(--text-primary);margin-bottom:30px;font-size:18px;">选择你在江湖中的根基......</p>
-                    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;max-width:700px;margin:0 auto;">
-                        ${origins.map(o => `
-                            <label style="background:${playerProfile.origin===o?'var(--btn-bg)':'var(--input-bg)'};border:2px solid ${playerProfile.origin===o?'var(--btn-bg)':'var(--input-border)'};padding:12px 20px;border-radius:8px;cursor:pointer;color:${playerProfile.origin===o?'#fff':'var(--text-primary)'};font-size:17px;">
-                                <input type="radio" name="origin" value="${o}" style="display:none;" onchange="playerProfile.origin=this.value; renderWizard();" ${playerProfile.origin===o?'checked':''}>
-                                ${o}
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
+                        <p style="color:var(--text-primary);margin-bottom:30px;font-size:18px;">选择你在江湖中的根基......</p>
+                        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;max-width:700px;margin:0 auto;">
+                            ${origins.map(o => `
+                                <label style="background:${playerProfile.origin===o?'var(--btn-bg)':'var(--input-bg)'};border:2px solid ${playerProfile.origin===o?'var(--btn-bg)':'var(--input-border)'};padding:12px 20px;border-radius:8px;cursor:pointer;color:${playerProfile.origin===o?'#fff':'var(--text-primary)'};font-size:17px;">
+                                    <input type="radio" name="origin" value="${o}" style="display:none;" onchange="playerProfile.origin=this.value; renderWizard();" ${playerProfile.origin===o?'checked':''}>
+                                    ${o}
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
             } else if (wizardStep === 4) {
                 title.innerText = "天赋特质";
                 const traits = ['骨骼清奇', '天生神力', '过目不忘', '貌若天仙', '百毒不侵', '武学奇才'];
                 content.innerHTML = `
-                    <p style="color:var(--text-primary);margin-bottom:30px;font-size:18px;">选择你的先天资质......</p>
-                    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;max-width:700px;margin:0 auto;">
-                        ${traits.map(tr => `
-                            <label style="background:${playerProfile.traits===tr?'var(--btn-bg)':'var(--input-bg)'};border:2px solid ${playerProfile.traits===tr?'var(--btn-bg)':'var(--input-border)'};padding:12px 20px;border-radius:8px;cursor:pointer;color:${playerProfile.traits===tr?'#fff':'var(--text-primary)'};font-size:17px;">
-                                <input type="radio" name="trait" value="${tr}" style="display:none;" onchange="playerProfile.traits=this.value; renderWizard();" ${playerProfile.traits===tr?'checked':''}>
-                                ${tr}
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
+                        <p style="color:var(--text-primary);margin-bottom:30px;font-size:18px;">选择你的先天资质......</p>
+                        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;max-width:700px;margin:0 auto;">
+                            ${traits.map(tr => `
+                                <label style="background:${playerProfile.traits===tr?'var(--btn-bg)':'var(--input-bg)'};border:2px solid ${playerProfile.traits===tr?'var(--btn-bg)':'var(--input-border)'};padding:12px 20px;border-radius:8px;cursor:pointer;color:${playerProfile.traits===tr?'#fff':'var(--text-primary)'};font-size:17px;">
+                                    <input type="radio" name="trait" value="${tr}" style="display:none;" onchange="playerProfile.traits=this.value; renderWizard();" ${playerProfile.traits===tr?'checked':''}>
+                                    ${tr}
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
             } else if (wizardStep === 5) {
                 saveProfile();
                 title.innerText = "确认角色天资";
                 const attrs = playerProfile.attributes || {};
                 const attrStr = ATTR_KEYS.map(k => `${ATTR_NAMES[k]}: ${attrs[k]||0}`).join(' ｜ ');
                 content.innerHTML = `
-                    <pre style="text-align:left;background:var(--input-bg);padding:20px;border:2px solid var(--border-light);color:var(--text-primary);border-radius:10px;font-family:monospace;font-size:15px;white-space:pre-wrap;word-break:break-word;">
-姓名：${escapeHtml(playerProfile.name)}
-性别：${escapeHtml(playerProfile.gender)}
-年龄：${playerProfile.age}
-难度：${playerProfile.difficulty}（天赋点：${playerProfile.talentPoints}）
-出身：${playerProfile.origin}
-特质：${playerProfile.traits}
-天赋加点：${attrStr}
-                    </pre>
-                `;
+                        <pre style="text-align:left;background:var(--input-bg);padding:20px;border:2px solid var(--border-light);color:var(--text-primary);border-radius:10px;font-family:monospace;font-size:15px;white-space:pre-wrap;word-break:break-word;">
+        姓名：${escapeHtml(playerProfile.name)}
+        性别：${escapeHtml(playerProfile.gender)}
+        年龄：${playerProfile.age}
+        难度：${playerProfile.difficulty}（天赋点：${playerProfile.talentPoints}）
+        出身：${playerProfile.origin}
+        特质：${playerProfile.traits}
+        天赋加点：${attrStr}
+                        </pre>
+                    `;
             }
         }
 
@@ -2900,7 +3577,6 @@
                 renderWizard();
             } else {
                 saveProfile();
-                // 应用天赋加点
                 const attrs = playerProfile.attributes || {};
                 const hpBonus = (attrs.hp || 0) * 2;
                 const spdBonus = (attrs.spd || 0) * 1;
@@ -2909,13 +3585,11 @@
                 player.maxMp = 50 + spdBonus;
                 player.mp = player.maxMp;
                 player.exp = 0;
-                player.inventory = ["初学木剑 x1"];
-                if (playerProfile.origin) player.inventory.push(`身世：${playerProfile.origin}`);
-                if (playerProfile.traits) player.inventory.push(`天赋：${playerProfile.traits}`);
 
                 const name = playerProfile.name || "无名侠客";
                 chatHistory = [`<p class='ai-msg'><strong>【1237年·七月初二】</strong><br>武林散修【${escapeHtml(name)}】开启了属于他的神雕绘卷。</p>`];
                 conversation = [];
+                characters = [{ id: 'player', name: name, isPlayer: true, title: '主角' }];
                 enterGameInterface();
                 saveCurrentToSlot(currentSaveSlot);
             }
@@ -2936,7 +3610,7 @@
         }
 
         // ============================================================
-        //  核心对话功能（流式 + 动态反馈 + 纯文字输出）
+        //  核心对话功能
         // ============================================================
         function buildSystemPrompt(userInput) {
             let parts = [];
@@ -3041,21 +3715,21 @@
 
                     const hintId = 'generating-hint-' + Date.now();
                     const hintHtml = `
-                        <p id="${hintId}" class="ai-msg">
-                            <span class="generating-hint">✦ 正文正在生成中</span>
-                        </p>
-                    `;
+                            <p id="${hintId}" class="ai-msg">
+                                <span class="generating-hint">✦ 正文正在生成中</span>
+                            </p>
+                        `;
                     cb.innerHTML += hintHtml;
                     cb.scrollTop = cb.scrollHeight;
 
                     const streamId = 'stream-' + Date.now();
                     const streamHtml = `
-                        <p id="${streamId}" class="ai-msg" style="display:none;">
-                            <strong>AI：</strong>
-                            <span id="${streamId}-content"></span>
-                            <span id="${streamId}-cursor" class="stream-loading">▍</span>
-                        </p>
-                    `;
+                            <p id="${streamId}" class="ai-msg" style="display:none;">
+                                <strong>AI：</strong>
+                                <span id="${streamId}-content"></span>
+                                <span id="${streamId}-cursor" class="stream-loading">▍</span>
+                            </p>
+                        `;
                     cb.innerHTML += streamHtml;
                     const contentSpan = getEl(streamId + '-content');
                     const cursorSpan = getEl(streamId + '-cursor');
@@ -3110,6 +3784,8 @@
                     chatHistory.push(finalHtml);
                     conversation.push({ role: 'assistant', content: fullContent });
                     truncateConversation();
+                    // 自动提取NPC
+                    extractAndAddNPCs(fullContent);
                     saveGame();
                     cb.scrollTop = cb.scrollHeight;
 
@@ -3122,6 +3798,8 @@
                         const aiContent = data.choices[0].message.content;
                         const aiHtml = `<p class="ai-msg"><strong>AI：</strong>${escapeHtml(aiContent)}</p>`;
                         appendAIResponse(aiHtml, aiContent);
+                        // 自动提取NPC
+                        extractAndAddNPCs(aiContent);
                     } else {
                         throw new Error('API 返回数据格式错误');
                     }
@@ -3158,7 +3836,7 @@
             saveGame();
         }
 
-        console.log('🐉 神雕侠侣 · 武侠绘卷 已加载 (v1.6.0) — 存档管理增强 · 角色面板升级');
+        console.log('🐉 神雕侠侣 · 武侠绘卷 已加载 (v1.8.0) — 正文分段 & NPC自动提取');
     </script>
 
 </body>
